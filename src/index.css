@@ -3,22 +3,22 @@
 @tailwind utilities;
 
 /* Victorian Quantum Veil Design System
-   Deep cosmic blacks, rich golds, jewel tones
+   Warm burgundy palette, rich golds, jewel tones
    All colors in HSL format */
 
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Cinzel:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
-    /* Core cosmic palette */
-    --background: 240 20% 4%;
+    /* Core warm burgundy palette */
+    --background: 350 35% 8%;
     --foreground: 45 30% 90%;
 
     /* Card surfaces */
-    --card: 240 15% 8%;
+    --card: 350 30% 12%;
     --card-foreground: 45 30% 90%;
 
-    --popover: 240 15% 10%;
+    --popover: 350 28% 14%;
     --popover-foreground: 45 30% 90%;
 
     /* Royal gold primary */
@@ -30,11 +30,11 @@
     --secondary-foreground: 45 30% 90%;
 
     /* Muted cosmic tones */
-    --muted: 240 15% 15%;
-    --muted-foreground: 240 10% 60%;
+    --muted: 350 25% 18%;
+    --muted-foreground: 350 15% 55%;
 
     /* Jewel tone accents */
-    --accent: 160 45% 25%;
+    --accent: 35 50% 25%;
     --accent-foreground: 45 30% 90%;
 
     /* Destructive */
@@ -43,7 +43,7 @@
 
     /* Borders and inputs */
     --border: 45 30% 25%;
-    --input: 240 15% 15%;
+    --input: 350 25% 15%;
     --ring: 45 80% 55%;
 
     --radius: 0.5rem;
@@ -57,42 +57,45 @@
     --gold-dim: 45 60% 40%;
     --gold-glow: 45 90% 70%;
     
-    /* Cosmic background colors */
-    --cosmic-deep: 240 25% 3%;
-    --cosmic-nebula: 260 30% 8%;
-    --cosmic-void: 220 20% 5%;
+    /* Warm cosmic background colors */
+    --cosmic-deep: 350 35% 5%;
+    --cosmic-nebula: 350 40% 10%;
+    --cosmic-void: 350 30% 6%;
+    
+    /* Rose accent for glows */
+    --rose-glow: 350 60% 45%;
 
     /* Sidebar (dark theme by default) */
-    --sidebar-background: 240 20% 6%;
+    --sidebar-background: 350 35% 10%;
     --sidebar-foreground: 45 30% 85%;
     --sidebar-primary: 45 80% 55%;
-    --sidebar-primary-foreground: 240 20% 4%;
+    --sidebar-primary-foreground: 350 35% 8%;
     --sidebar-accent: 160 45% 20%;
     --sidebar-accent-foreground: 45 30% 90%;
-    --sidebar-border: 45 30% 20%;
+    --sidebar-border: 350 30% 20%;
     --sidebar-ring: 45 80% 55%;
   }
 
   /* No light mode - always dark cosmic theme */
   .dark {
-    --background: 240 20% 4%;
+    --background: 350 35% 8%;
     --foreground: 45 30% 90%;
-    --card: 240 15% 8%;
+    --card: 350 30% 12%;
     --card-foreground: 45 30% 90%;
-    --popover: 240 15% 10%;
+    --popover: 350 28% 14%;
     --popover-foreground: 45 30% 90%;
     --primary: 45 80% 55%;
-    --primary-foreground: 240 20% 4%;
+    --primary-foreground: 350 35% 8%;
     --secondary: 350 50% 25%;
     --secondary-foreground: 45 30% 90%;
-    --muted: 240 15% 15%;
-    --muted-foreground: 240 10% 60%;
-    --accent: 160 45% 25%;
+    --muted: 350 25% 18%;
+    --muted-foreground: 350 15% 55%;
+    --accent: 35 50% 25%;
     --accent-foreground: 45 30% 90%;
     --destructive: 0 62% 30%;
     --destructive-foreground: 45 30% 90%;
     --border: 45 30% 25%;
-    --input: 240 15% 15%;
+    --input: 350 25% 15%;
     --ring: 45 80% 55%;
   }
 }
@@ -142,16 +145,16 @@
   /* Cosmic background gradient */
   .bg-cosmic {
     background: 
-      radial-gradient(ellipse at 20% 80%, hsl(280 40% 12% / 0.4) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, hsl(220 60% 12% / 0.4) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, hsl(260 30% 8%) 0%, hsl(240 25% 3%) 100%);
+      radial-gradient(ellipse at 20% 80%, hsl(350 40% 15% / 0.5) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, hsl(25 50% 12% / 0.4) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, hsl(350 35% 10%) 0%, hsl(350 30% 6%) 100%);
   }
 
   /* Subtle nebula overlay */
   .bg-nebula-overlay {
     background-image: 
-      radial-gradient(circle at 30% 70%, hsl(280 40% 20% / 0.15) 0%, transparent 40%),
-      radial-gradient(circle at 70% 30%, hsl(160 45% 20% / 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 30% 70%, hsl(350 45% 25% / 0.2) 0%, transparent 40%),
+      radial-gradient(circle at 70% 30%, hsl(35 50% 20% / 0.15) 0%, transparent 40%),
       radial-gradient(circle at 50% 50%, hsl(45 80% 55% / 0.03) 0%, transparent 60%);
   }
 
@@ -168,6 +171,37 @@
       0 0 30px hsl(45 80% 55% / 0.5),
       0 0 60px hsl(45 80% 55% / 0.3),
       0 0 90px hsl(45 80% 55% / 0.15);
+  }
+
+  /* Rose/burgundy ambient glow */
+  .glow-rose {
+    box-shadow: 
+      0 0 20px hsl(350 50% 40% / 0.3),
+      0 0 40px hsl(350 50% 40% / 0.15),
+      0 0 60px hsl(350 50% 40% / 0.05);
+  }
+
+  /* Combined gold and rose glow */
+  .glow-gold-rose {
+    box-shadow: 
+      0 0 20px hsl(45 80% 55% / 0.25),
+      0 0 40px hsl(350 50% 40% / 0.15),
+      0 0 60px hsl(45 80% 55% / 0.1);
+  }
+
+  /* Warm vignette overlay */
+  .bg-vignette::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 40%,
+      hsl(350 40% 5% / 0.4) 80%,
+      hsl(350 45% 3% / 0.7) 100%
+    );
+    z-index: 1;
   }
 
   /* Art Nouveau border styling */
@@ -311,6 +345,22 @@
 
 .animate-vine-sway {
   animation: vine-sway 6s ease-in-out infinite;
+}
+
+/* Twinkling stars animation */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
 }
 
 /* Card perspective */
