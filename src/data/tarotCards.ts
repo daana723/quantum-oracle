@@ -6,6 +6,9 @@ export interface TarotCard {
   reversedMeaning: string;
   symbolism: string;
   themes: string[];
+  planetaryRuler: string;
+  element: 'fire' | 'water' | 'air' | 'earth' | 'spirit';
+  zodiacAssociation?: string;
 }
 
 export const majorArcana: TarotCard[] = [
@@ -17,6 +20,8 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Hesitation guards the gate. Perhaps the timing feels uncertain, or the unknown looms too large. Consider: is caution wisdom, or fear wearing wisdom's mask?",
     symbolism: "The precipice, the white rose, the small companion—each speaks of innocence that is not naiveté, but rather the courage to begin without knowing the end.",
     themes: ["change", "self", "clarity"],
+    planetaryRuler: "Uranus",
+    element: "air",
   },
   {
     id: 1,
@@ -26,6 +31,8 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Power scattered or misdirected. The tools remain, but perhaps the vision has clouded. Realign intention with action; the magic awaits your focused return.",
     symbolism: "One hand raised to heaven, one pointing to earth—the eternal conduit between possibility and manifestation, thought and form.",
     themes: ["career", "self", "clarity"],
+    planetaryRuler: "Mercury",
+    element: "air",
   },
   {
     id: 2,
@@ -35,6 +42,8 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "The inner voice speaks, but interference clouds reception. External noise, perhaps, or the fear of what silence might reveal. Return to the temple within.",
     symbolism: "She sits between pillars of duality, holding scrolls of hidden law. The moon at her feet speaks of cycles and the wisdom that dwells in darkness.",
     themes: ["love", "self", "shadow"],
+    planetaryRuler: "Moon",
+    element: "water",
   },
   {
     id: 3,
@@ -44,6 +53,8 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "The well needs replenishing. Have you been pouring forth without receiving? The mother who forgets herself cannot long sustain. Tend your own garden first.",
     symbolism: "Wheat fields and flowing waters, the pregnant pause before harvest. She embodies creation not as effort, but as natural unfolding.",
     themes: ["love", "self", "clarity"],
+    planetaryRuler: "Venus",
+    element: "earth",
   },
   {
     id: 4,
@@ -53,6 +64,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Structure become prison, authority become tyranny—even over oneself. Examine: does your discipline serve growth, or has it become the obstacle it was meant to prevent?",
     symbolism: "The throne of stone, the ram's heads, the orb and scepter—symbols of dominion earned through mastery, not force.",
     themes: ["career", "self", "clarity"],
+    planetaryRuler: "Mars",
+    element: "fire",
+    zodiacAssociation: "Aries",
   },
   {
     id: 5,
@@ -62,6 +76,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "The old ways chafe against emerging truth. Perhaps you're called to find meaning beyond established structures, to become your own spiritual authority.",
     symbolism: "Keys crossed, acolytes kneeling, the triple crown—gateways to understanding that require both humility and questioning.",
     themes: ["self", "clarity", "shadow"],
+    planetaryRuler: "Venus",
+    element: "earth",
+    zodiacAssociation: "Taurus",
   },
   {
     id: 6,
@@ -71,6 +88,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Disharmony surfaces—with others, or within yourself. Conflicting desires pull in opposite directions. Before choosing between, examine what each truly represents.",
     symbolism: "The angel blessing the union, the tree of knowledge, the mountain of aspiration—choice as sacred act, relationship as mirror.",
     themes: ["love", "self", "clarity"],
+    planetaryRuler: "Mercury",
+    element: "air",
+    zodiacAssociation: "Gemini",
   },
   {
     id: 7,
@@ -80,6 +100,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "The vehicle stalls or veers. Control slips when inner conflicts remain unresolved. Before demanding movement, ensure your own contradictions are harnessed.",
     symbolism: "Stars crown the charioteer; black and white sphinxes submit to will. Victory through integration, movement through mastery.",
     themes: ["career", "self", "change"],
+    planetaryRuler: "Moon",
+    element: "water",
+    zodiacAssociation: "Cancer",
   },
   {
     id: 8,
@@ -89,6 +112,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Either force is applied where gentleness serves, or gentleness where force is needed. Strength misaligned. Recalibrate your approach to the challenge at hand.",
     symbolism: "The infinity crown, the open hands on the lion's jaws—power that comes from befriending rather than battling the beast.",
     themes: ["self", "shadow", "love"],
+    planetaryRuler: "Sun",
+    element: "fire",
+    zodiacAssociation: "Leo",
   },
   {
     id: 9,
@@ -98,6 +124,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Isolation has become hiding rather than seeking. The hermitage serves contemplation, not escape. When is solitude wisdom, and when is it fear of connection?",
     symbolism: "The mountain peak, the lantern held aloft, the staff of wisdom—the journey inward as the essential pilgrimage.",
     themes: ["self", "shadow", "clarity"],
+    planetaryRuler: "Mercury",
+    element: "earth",
+    zodiacAssociation: "Virgo",
   },
   {
     id: 10,
@@ -107,6 +136,8 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Resistance to necessary change, or feeling caught in cycles that seem endless. Yet even reversed, the wheel moves. What pattern seeks breaking?",
     symbolism: "Sphinx atop, creatures ascending and descending, the eternal rotation—fortune as flow, change as the only constant.",
     themes: ["change", "career", "clarity"],
+    planetaryRuler: "Jupiter",
+    element: "fire",
   },
   {
     id: 11,
@@ -116,6 +147,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Imbalance persists—within, without, or both. Justice delayed or denied. Yet the scales exist even when we prefer not to see them. What truth awaits acknowledgment?",
     symbolism: "The blindfold absent—this justice sees clearly. Sword raised, scales held level—discernment precedes action.",
     themes: ["clarity", "career", "shadow"],
+    planetaryRuler: "Venus",
+    element: "air",
+    zodiacAssociation: "Libra",
   },
   {
     id: 12,
@@ -125,6 +159,8 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Resistance to necessary surrender, or stalling without purpose. The pause has purpose; aimless waiting does not. Which are you experiencing?",
     symbolism: "The serene face, the halo of enlightenment, the bound foot—willing limitation as gateway to liberation.",
     themes: ["self", "change", "shadow"],
+    planetaryRuler: "Neptune",
+    element: "water",
   },
   {
     id: 13,
@@ -134,6 +170,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Resistance to necessary ending prolongs what cannot be sustained. The transformation awaits your consent. What are you holding onto that has already left?",
     symbolism: "The pale horse, the fallen king, the rising sun—death not as termination, but as the essential turning in every cycle of growth.",
     themes: ["change", "shadow", "self"],
+    planetaryRuler: "Pluto",
+    element: "water",
+    zodiacAssociation: "Scorpio",
   },
   {
     id: 14,
@@ -143,6 +182,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Excess in one direction or another disrupts the flow. The mixture requires precise proportions. Where has balance been neglected?",
     symbolism: "One foot in water, one on land; the sun of the path ahead; the iris of divine messaging—integration as spiritual practice.",
     themes: ["self", "love", "clarity"],
+    planetaryRuler: "Jupiter",
+    element: "fire",
+    zodiacAssociation: "Sagittarius",
   },
   {
     id: 15,
@@ -152,6 +194,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Liberation from old bindings, or deeper descent into their grip. The shadow confronted can become ally. Which movement is yours?",
     symbolism: "The inverted pentagram, the loose chains, the flame tails—materiality mistaken for reality, freedom forgotten but never lost.",
     themes: ["shadow", "love", "self"],
+    planetaryRuler: "Saturn",
+    element: "earth",
+    zodiacAssociation: "Capricorn",
   },
   {
     id: 16,
@@ -161,6 +206,8 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Destruction averted or prolonged. Perhaps the tower trembles but stands—for now. Sometimes we dismantle by choice what lightning would otherwise shatter.",
     symbolism: "The crown blown off, figures falling, flames from windows—not destruction but revelation, not ending but explosive beginning.",
     themes: ["change", "shadow", "clarity"],
+    planetaryRuler: "Mars",
+    element: "fire",
   },
   {
     id: 17,
@@ -170,6 +217,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Faith wavers; the stars seem distant. Yet they shine regardless of clouds. Perhaps the question is not whether hope is warranted, but whether you can access it.",
     symbolism: "The naked figure, the eight-pointed stars, the ibis of thought—vulnerability as strength, openness as wisdom.",
     themes: ["love", "self", "clarity"],
+    planetaryRuler: "Uranus",
+    element: "air",
+    zodiacAssociation: "Aquarius",
   },
   {
     id: 18,
@@ -179,6 +229,9 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Illusions dispersing, or fears confronted. The moon's deceptions lose power when named. What emerges as the mist clears?",
     symbolism: "The howling dogs, the emerging crayfish, the winding path—the journey through uncertainty, the subconscious rising.",
     themes: ["shadow", "self", "love"],
+    planetaryRuler: "Neptune",
+    element: "water",
+    zodiacAssociation: "Pisces",
   },
   {
     id: 19,
@@ -188,6 +241,8 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "The sun shines, but perhaps you stand in self-created shadow. Joy exists; the question is access. What blocks the light that's already present?",
     symbolism: "The white horse of purity, the sunflowers turning, the banner of triumph—innocence recovered, not naivety but wisdom's return to wonder.",
     themes: ["love", "self", "clarity"],
+    planetaryRuler: "Sun",
+    element: "fire",
   },
   {
     id: 20,
@@ -197,6 +252,8 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "The call goes unheeded, or self-judgement replaces divine perspective. Condemnation is not the purpose here. What resurrection awaits your acceptance?",
     symbolism: "The angel's horn, the rising figures, the mountains of finality—not ending but accounting, not death but awakening.",
     themes: ["self", "shadow", "change"],
+    planetaryRuler: "Pluto",
+    element: "fire",
   },
   {
     id: 21,
@@ -206,6 +263,8 @@ export const majorArcana: TarotCard[] = [
     reversedMeaning: "Completion delayed, or the fear of what finishing might mean. Perhaps loose ends remain. Or perhaps you hesitate at the threshold of the next great cycle.",
     symbolism: "The four fixed signs, the wands of mastery, the wreath of victory—integration of all elements, the self as cosmos.",
     themes: ["clarity", "self", "change"],
+    planetaryRuler: "Saturn",
+    element: "earth",
   },
 ];
 

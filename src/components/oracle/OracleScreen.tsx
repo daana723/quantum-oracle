@@ -1,8 +1,7 @@
 import React, { useState, useCallback } from "react";
-import { History, Info } from "lucide-react";
+import { History, Info, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardBack from "@/components/oracle/CardBack";
-import CardFront from "@/components/oracle/CardFront";
 import IntentSelector from "@/components/oracle/IntentSelector";
 import ReadingDisplay from "@/components/oracle/ReadingDisplay";
 import HistoryDrawer from "@/components/oracle/HistoryDrawer";
@@ -20,8 +19,9 @@ import {
   type ThemeType,
   type TarotCard,
 } from "@/data/tarotCards";
+import { getCurrentCosmicWeather } from "@/data/cosmicWeather";
 
-type OracleState = "intent" | "hidden" | "collapsing" | "revealed";
+type OracleState = "intent" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
 
 const OracleScreen: React.FC = () => {
   const [state, setState] = useState<OracleState>("intent");
@@ -32,8 +32,14 @@ const OracleScreen: React.FC = () => {
 
   const { readings, saveReading, deleteReading, clearAllReadings } = useReadingHistory();
 
+  const [cosmicWeather] = useState(() => getCurrentCosmicWeather());
+
   const handleProceedToCard = useCallback(() => {
-    setState("hidden");
+    // Show cosmic moment briefly before the card
+    setState("cosmic-moment");
+    setTimeout(() => {
+      setState("hidden");
+    }, 2500);
   }, []);
 
   const handleCardClick = useCallback(() => {
@@ -68,10 +74,48 @@ const OracleScreen: React.FC = () => {
     setEchoCards([]);
   }, []);
 
+  // Generate particle colors - gold, rose, cream mix
+  const getParticleColor = (index: number) => {
+    const colors = [
+      "bg-gold/20", "bg-gold/25", "bg-gold/20", "bg-gold/30", // 60% gold
+      "bg-rose-400/20", "bg-rose-300/15", "bg-rose-500/20", // 30% rose
+      "bg-amber-100/15", // 10% cream
+    ];
+    return colors[index % colors.length];
+  };
+
   return (
-    <div className="min-h-screen bg-cosmic bg-nebula-overlay flex flex-col">
+    <div className="min-h-screen bg-cosmic bg-nebula-overlay bg-vignette flex flex-col relative">
+      {/* Twinkling stars layer */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={`star-${i}`}
+            className="absolute w-0.5 h-0.5 bg-gold/40 rounded-full animate-twinkle"
+            style={{
+              left: `${10 + (i * 17) % 80}%`,
+              top: `${5 + (i * 23) % 90}%`,
+              animationDelay: `${i * 0.4}s`,
+              animationDuration: `${2 + (i % 3)}s`,
+            }}
+          />
+        ))}
+        {[...Array(10)].map((_, i) => (
+          <div
+            key={`star-rose-${i}`}
+            className="absolute w-0.5 h-0.5 bg-rose-300/30 rounded-full animate-twinkle"
+            style={{
+              left: `${20 + (i * 29) % 60}%`,
+              top: `${15 + (i * 31) % 70}%`,
+              animationDelay: `${i * 0.6 + 1}s`,
+              animationDuration: `${2.5 + (i % 2)}s`,
+            }}
+          />
+        ))}
+      </div>
+
       {/* Header */}
-      <header className="relative z-10 px-4 py-4 md:py-6 flex items-center justify-between">
+      <header className="relative z-20 px-4 py-4 md:py-6 flex items-center justify-between">
         <HistoryDrawer
           readings={readings}
           onDeleteReading={deleteReading}
@@ -129,7 +173,7 @@ const OracleScreen: React.FC = () => {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4 pb-8">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 pb-8 relative z-10">
         {/* Intent selection phase */}
         {state === "intent" && (
           <div className="flex flex-col items-center gap-8 md:gap-12 animate-fade-in-up">
@@ -164,6 +208,21 @@ const OracleScreen: React.FC = () => {
           </div>
         )}
 
+        {/* Cosmic Moment - bridge between intent and card */}
+        {state === "cosmic-moment" && (
+          <div className="flex flex-col items-center gap-6 animate-fade-in-up text-center">
+            <Sparkles className="w-8 h-8 text-gold/60 animate-gentle-pulse" />
+            <div className="space-y-3">
+              <p className="font-display text-lg md:text-xl text-gold/90">
+                The veil opens during a {cosmicWeather.moonPhase}...
+              </p>
+              <p className="font-body text-sm md:text-base text-foreground/70 italic">
+                {cosmicWeather.dominantElement.charAt(0).toUpperCase() + cosmicWeather.dominantElement.slice(1)} energies flow through this moment
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Hidden card phase */}
         {(state === "hidden" || state === "collapsing") && (
           <div className="flex flex-col items-center gap-6 md:gap-8 animate-fade-in-up">
@@ -194,11 +253,11 @@ const OracleScreen: React.FC = () => {
       </main>
 
       {/* Ambient particles */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         {[...Array(12)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-1 h-1 bg-gold/20 rounded-full animate-float-particles"
+            className={`absolute w-1 h-1 rounded-full animate-float-particles ${getParticleColor(i)}`}
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,

@@ -1,6 +1,8 @@
 import React from "react";
 import type { TarotCard } from "@/data/tarotCards";
 import CardFront from "./CardFront";
+import PlanetaryResonance from "./PlanetaryResonance";
+import CosmicWeatherPanel from "./CosmicWeatherPanel";
 
 interface ReadingDisplayProps {
   primaryCard: TarotCard;
@@ -16,10 +18,13 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
   const [expandedEcho, setExpandedEcho] = React.useState<number | null>(null);
 
   return (
-    <div className="flex flex-col items-center gap-6 md:gap-8 w-full max-w-2xl mx-auto px-4 bg-burgundy/5 rounded-lg p-6 md:p-8">
+    <div className="flex flex-col items-center gap-6 md:gap-8 w-full max-w-2xl mx-auto px-4">
       {/* Primary card */}
       <div className="flex flex-col items-center gap-4 md:gap-6">
         <CardFront card={primaryCard} isRevealed={true} size="full" />
+
+        {/* Planetary Resonance - appears after card */}
+        <PlanetaryResonance card={primaryCard} className="mt-2" />
 
         {/* Primary interpretation */}
         <div className="text-center space-y-3 md:space-y-4 max-w-md animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
@@ -32,10 +37,13 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
         </div>
       </div>
 
+      {/* Cosmic Weather Panel */}
+      <CosmicWeatherPanel className="mt-2" />
+
       {/* Divider */}
       <div 
         className="w-full max-w-xs flex items-center gap-4 animate-fade-in-up"
-        style={{ animationDelay: "0.5s" }}
+        style={{ animationDelay: "1.2s" }}
       >
         <div className="flex-1 h-px bg-gradient-to-r from-transparent to-gold/30" />
         <span className="text-gold/50 text-lg">✧</span>
@@ -45,7 +53,7 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
       {/* Superposition echoes */}
       <div 
         className="text-center space-y-4 md:space-y-6 animate-fade-in-up"
-        style={{ animationDelay: "0.6s" }}
+        style={{ animationDelay: "1.4s" }}
       >
         <h4 className="font-display text-sm md:text-base text-gold/70 tracking-widest uppercase">
           Echoes of Parallel Paths
@@ -100,7 +108,7 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
           transition-all duration-300
           animate-fade-in-up
         "
-        style={{ animationDelay: "0.8s" }}
+        style={{ animationDelay: "1.6s" }}
       >
         ✧ New Observation ✧
       </button>
