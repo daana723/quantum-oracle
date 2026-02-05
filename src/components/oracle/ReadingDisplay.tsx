@@ -16,7 +16,7 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
   const [expandedEcho, setExpandedEcho] = React.useState<number | null>(null);
 
   return (
-    <div className="flex flex-col items-center gap-6 md:gap-8 w-full max-w-2xl mx-auto px-4">
+    <div className="flex flex-col items-center gap-6 md:gap-8 w-full max-w-2xl mx-auto px-4 bg-burgundy/5 rounded-lg p-6 md:p-8">
       {/* Primary card */}
       <div className="flex flex-col items-center gap-4 md:gap-6">
         <CardFront card={primaryCard} isRevealed={true} size="full" />
