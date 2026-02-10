@@ -3,6 +3,7 @@ import type { TarotCard } from "@/data/tarotCards";
 import CardFront from "./CardFront";
 import PlanetaryResonance from "./PlanetaryResonance";
 import CosmicWeatherPanel from "./CosmicWeatherPanel";
+import ShareableReading from "./ShareableReading";
 
 interface ReadingDisplayProps {
   primaryCard: TarotCard;
@@ -97,21 +98,24 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
         )}
       </div>
 
-      {/* New Reading button */}
-      <button
-        onClick={onNewReading}
-        className="
-          mt-4 md:mt-6 px-6 md:px-8 py-2.5 md:py-3 rounded-full
-          font-display text-sm md:text-base tracking-wider
-          border border-gold/40 text-gold/80
-          bg-transparent hover:bg-gold/10 hover:border-gold hover:text-gold
-          transition-all duration-300
-          animate-fade-in-up
-        "
-        style={{ animationDelay: "1.6s" }}
-      >
-        ✧ New Observation ✧
-      </button>
+      {/* Action buttons */}
+      <div className="flex flex-col sm:flex-row items-center gap-3 mt-4 md:mt-6">
+        <ShareableReading primaryCard={primaryCard} echoCards={echoCards} />
+        <button
+          onClick={onNewReading}
+          className="
+            px-6 md:px-8 py-2.5 md:py-3 rounded-full
+            font-display text-sm md:text-base tracking-wider
+            border border-gold/40 text-gold/80
+            bg-transparent hover:bg-gold/10 hover:border-gold hover:text-gold
+            transition-all duration-300
+            animate-fade-in-up
+          "
+          style={{ animationDelay: "1.6s" }}
+        >
+          ✧ New Observation ✧
+        </button>
+      </div>
     </div>
   );
 };
