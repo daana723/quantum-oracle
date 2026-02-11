@@ -220,28 +220,85 @@ const ShareableReading: React.FC<ShareableReadingProps> = ({ primaryCard, echoCa
     }, "image/png");
   }, [primaryCard, echoCards]);
 
-  const handleShare = useCallback(async () => {
+  const handleDownload = useCallback(async () => {
     await generateImage();
   }, [generateImage]);
+
+  const handleShare = useCallback(async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      await generateImage();
+      return;
+    }
+
+    // Generate the image first
+    await generateImage();
+
+    // Try native Web Share API
+    if (navigator.share && navigator.canShare) {
+      try {
+        const blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob(resolve, "image/png")
+        );
+        if (!blob) return;
+
+        const file = new File(
+          [blob],
+          `reading-${primaryCard.name.toLowerCase().replace(/\s+/g, "-")}.png`,
+          { type: "image/png" }
+        );
+
+        const shareData = {
+          title: `${primaryCard.name} — Victorian Quantum Veil`,
+          text: `I drew ${primaryCard.name}. ${primaryCard.keywords.slice(0, 3).join(" · ")}`,
+          files: [file],
+        };
+
+        if (navigator.canShare(shareData)) {
+          await navigator.share(shareData);
+          return;
+        }
+      } catch (err) {
+        // User cancelled or share failed — fall through to download
+        if ((err as Error).name !== "AbortError") {
+          console.log("Share failed, falling back to download");
+        }
+        return;
+      }
+    }
+  }, [generateImage, primaryCard]);
 
   return (
     <>
       <canvas ref={canvasRef} className="hidden" />
-      <button
-        onClick={handleShare}
-        className="
-          mt-2 px-6 md:px-8 py-2.5 md:py-3 rounded-full
-          font-display text-sm md:text-base tracking-wider
-          border border-gold/40 text-gold/80
-          bg-transparent hover:bg-gold/10 hover:border-gold hover:text-gold
-          transition-all duration-300 flex items-center gap-2
-          animate-fade-in-up
-        "
-        style={{ animationDelay: "1.8s" }}
-      >
-        <Download className="w-4 h-4" />
-        Save Reading
-      </button>
+      <div className="flex items-center gap-3 animate-fade-in-up" style={{ animationDelay: "1.8s" }}>
+        <button
+          onClick={handleShare}
+          className="
+            mt-2 px-6 md:px-8 py-2.5 md:py-3 rounded-full
+            font-display text-sm md:text-base tracking-wider
+            border border-gold/40 text-gold/80
+            bg-transparent hover:bg-gold/10 hover:border-gold hover:text-gold
+            transition-all duration-300 flex items-center gap-2
+          "
+        >
+          <Share2 className="w-4 h-4" />
+          Share
+        </button>
+        <button
+          onClick={handleDownload}
+          className="
+            mt-2 px-6 md:px-8 py-2.5 md:py-3 rounded-full
+            font-display text-sm md:text-base tracking-wider
+            border border-gold/40 text-gold/80
+            bg-transparent hover:bg-gold/10 hover:border-gold hover:text-gold
+            transition-all duration-300 flex items-center gap-2
+          "
+        >
+          <Download className="w-4 h-4" />
+          Save
+        </button>
+      </div>
     </>
   );
 };

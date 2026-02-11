@@ -20,11 +20,11 @@ const CardGallery: React.FC = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-4">
         {majorArcana.map((card) => (
           <div key={card.id} className="flex flex-col items-center gap-2">
-            <div className="w-full aspect-[2/3] rounded-lg overflow-hidden">
+            <div className="w-full aspect-[2/3] rounded-lg overflow-hidden bg-card flex items-center justify-center">
               <img
                 src={cardImages[card.id]}
                 alt={card.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-center"
               />
             </div>
             <span className="text-xs text-gold/70 font-body text-center">
