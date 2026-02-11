@@ -34,7 +34,7 @@ const CardFront: React.FC<CardFrontProps> = ({
     >
       <div 
         className={`
-          absolute inset-0 rounded-lg border-2 border-gold overflow-hidden
+          absolute inset-0 rounded-lg overflow-hidden
           ${isEcho ? "" : "glow-gold"}
         `}
       >
