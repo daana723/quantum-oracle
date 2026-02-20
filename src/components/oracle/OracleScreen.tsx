@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { History, Info, Sparkles, Sun, BarChart3 } from "lucide-react";
+import { History, Info, Sparkles, Sun, BarChart3, Moon, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardBack from "@/components/oracle/CardBack";
 import IntentSelector from "@/components/oracle/IntentSelector";
@@ -155,6 +155,20 @@ const OracleScreen: React.FC = () => {
             title="Pattern Analytics"
           >
             <BarChart3 className="h-5 w-5" />
+          </Link>
+          <Link
+            to="/lunar-calendar"
+            className="text-gold/60 hover:text-gold transition-colors"
+            title="Lunar Calendar"
+          >
+            <Moon className="h-5 w-5" />
+          </Link>
+          <Link
+            to="/birth-chart"
+            className="text-gold/60 hover:text-gold transition-colors"
+            title="Birth Chart"
+          >
+            <User className="h-5 w-5" />
           </Link>
           <Link
             to="/daily"

@@ -3,6 +3,7 @@ import type { TarotCard } from "@/data/tarotCards";
 import CardFront from "./CardFront";
 import PlanetaryResonance from "./PlanetaryResonance";
 import CosmicWeatherPanel from "./CosmicWeatherPanel";
+import QuantumAstrologyWidget from "./QuantumAstrologyWidget";
 import ShareableReading from "./ShareableReading";
 
 interface ReadingDisplayProps {
@@ -40,6 +41,9 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
 
       {/* Cosmic Weather Panel */}
       <CosmicWeatherPanel className="mt-2" />
+
+      {/* Quantum Astrology Widget */}
+      <QuantumAstrologyWidget className="mt-2" />
 
       {/* Divider */}
       <div 
