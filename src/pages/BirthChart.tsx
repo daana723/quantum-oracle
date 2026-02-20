@@ -16,10 +16,9 @@ const BirthChart: React.FC = () => {
 
   const handleCalculate = () => {
     if (!birthDate) return;
-    const date = new Date(birthDate + "T12:00:00");
-    const result = calculateBirthChart(date, birthHour);
+    const result = calculateBirthChart(birthDate, birthHour);
     setChart(result);
-    saveBirthData(date, birthHour, result);
+    saveBirthData(birthDate, birthHour, result);
   };
 
   const handleClear = () => {
