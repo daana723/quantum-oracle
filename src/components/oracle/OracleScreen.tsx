@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { History, Info, Sparkles, Sun, BarChart3, Moon, User } from "lucide-react";
+import { History, Info, Sparkles, Sun, BarChart3, Moon, User, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardBack from "@/components/oracle/CardBack";
 import IntentSelector from "@/components/oracle/IntentSelector";
@@ -149,6 +149,13 @@ const OracleScreen: React.FC = () => {
         </HistoryDrawer>
 
         <div className="flex items-center gap-2">
+          <Link
+            to="/gallery"
+            className="text-gold/60 hover:text-gold transition-colors"
+            title="Card Gallery"
+          >
+            <LayoutGrid className="h-5 w-5" />
+          </Link>
           <Link
             to="/patterns"
             className="text-gold/60 hover:text-gold transition-colors"
