@@ -89,21 +89,20 @@ const BirthChart: React.FC = () => {
 
                 <div>
                   <label className="block font-display text-xs text-gold/70 tracking-wider uppercase mb-2">
-                    Birth Hour (approximate)
+                    Birth Hour (0–23)
                   </label>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range"
-                      min={0}
-                      max={23}
-                      value={birthHour}
-                      onChange={(e) => setBirthHour(parseInt(e.target.value))}
-                      className="flex-1 accent-primary"
-                    />
-                    <span className="font-body text-sm text-foreground/80 w-14 text-right">
-                      {birthHour.toString().padStart(2, "0")}:00
-                    </span>
-                  </div>
+                  <input
+                    type="number"
+                    min={0}
+                    max={23}
+                    value={birthHour}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value);
+                      if (!isNaN(val) && val >= 0 && val <= 23) setBirthHour(val);
+                      else if (e.target.value === "") setBirthHour(0);
+                    }}
+                    className="w-full bg-input border border-border/60 rounded-lg px-4 py-2.5 font-body text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50"
+                  />
                   <p className="font-body text-xs text-muted-foreground mt-1 italic">
                     Birth time refines your Rising sign calculation
                   </p>
