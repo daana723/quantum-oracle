@@ -10,6 +10,7 @@ import CardGallery from "./pages/CardGallery";
 import CardDetail from "./pages/CardDetail";
 import Install from "./pages/Install";
 import DailyOracle from "./pages/DailyOracle";
+import PatternAnalytics from "./pages/PatternAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/daily" element={<DailyOracle />} />
             <Route path="/gallery" element={<CardGallery />} />
             <Route path="/cards/:slug" element={<CardDetail />} />
+            <Route path="/patterns" element={<PatternAnalytics />} />
             <Route path="/install" element={<Install />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
