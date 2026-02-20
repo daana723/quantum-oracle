@@ -1,5 +1,6 @@
 // Birth Chart Calculator — fully client-side, no API keys
-// Computes Sun sign, Moon sign, and approximate Rising sign from birth data
+// Uses improved astronomical formulas for Sun and Moon longitude
+// Rising sign remains an approximation without precise geographic coordinates
 
 export interface BirthChartData {
   sunSign: ZodiacPosition;
@@ -50,6 +51,8 @@ const SIGN_CARDS: Record<string, number[]> = {
   Pisces: [18],         // Moon
 };
 
+// --- Astronomical Math ---
+
 function julianDate(y: number, m: number, d: number): number {
   if (m <= 2) { y -= 1; m += 12; }
   const A = Math.floor(y / 100);
@@ -57,52 +60,94 @@ function julianDate(y: number, m: number, d: number): number {
   return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + B - 1524.5;
 }
 
-function getSunLongitude(date: Date): number {
-  const y = date.getFullYear();
-  const m = date.getMonth() + 1;
-  const d = date.getDate() + date.getHours() / 24;
-  const T = (julianDate(y, m, d) - 2451545.0) / 36525;
+/** Degrees to radians */
+function rad(deg: number): number { return deg * Math.PI / 180; }
 
-  // Mean longitude
-  const L0 = (280.46646 + 36000.76983 * T) % 360;
-  // Mean anomaly
-  const M = ((357.52911 + 35999.05029 * T) % 360) * Math.PI / 180;
+/** Normalize angle to 0-360 */
+function norm360(deg: number): number { return ((deg % 360) + 360) % 360; }
+
+/**
+ * Compute ecliptic longitude of the Sun using VSOP87-derived truncation.
+ * Accurate to ~0.01° for dates within ±200 years of J2000.
+ */
+function getSunLongitude(year: number, month: number, day: number, hour: number): number {
+  const JD = julianDate(year, month, day + hour / 24);
+  const T = (JD - 2451545.0) / 36525; // Julian centuries from J2000
+
+  // Geometric mean longitude of Sun (degrees)
+  const L0 = norm360(280.46646 + 36000.76983 * T + 0.0003032 * T * T);
+  // Mean anomaly of Sun (degrees)
+  const M = norm360(357.52911 + 35999.05029 * T - 0.0001537 * T * T);
+  const Mrad = rad(M);
+
   // Equation of center
-  const C = (1.9146 - 0.004817 * T) * Math.sin(M) + 0.019993 * Math.sin(2 * M);
+  const C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(Mrad)
+          + (0.019993 - 0.000101 * T) * Math.sin(2 * Mrad)
+          + 0.000289 * Math.sin(3 * Mrad);
 
-  return ((L0 + C) % 360 + 360) % 360;
+  // Sun's true longitude
+  const sunTrueLong = L0 + C;
+
+  // Apparent longitude (nutation + aberration correction)
+  const omega = rad(125.04 - 1934.136 * T);
+  const apparent = sunTrueLong - 0.00569 - 0.00478 * Math.sin(omega);
+
+  return norm360(apparent);
 }
 
-function getMoonLongitudeForBirth(date: Date): number {
-  const y = date.getFullYear();
-  const m = date.getMonth() + 1;
-  const d = date.getDate() + date.getHours() / 24;
-  const T = (julianDate(y, m, d) - 2451545.0) / 36525;
+/**
+ * Compute ecliptic longitude of the Moon using simplified ELP/MPP02 terms.
+ * Accurate to ~0.3° — sufficient for zodiac sign determination.
+ */
+function getMoonLongitude(year: number, month: number, day: number, hour: number): number {
+  const JD = julianDate(year, month, day + hour / 24);
+  const T = (JD - 2451545.0) / 36525;
 
-  const L = (218.3165 + 481267.8813 * T) % 360;
-  const M = (134.9634 + 477198.8676 * T) % 360;
-  const Ms = (357.5291 + 35999.0503 * T) % 360;
-  const Mrad = M * Math.PI / 180;
-  const Msrad = Ms * Math.PI / 180;
+  // Moon's mean longitude
+  const Lp = norm360(218.3164477 + 481267.88123421 * T - 0.0015786 * T * T);
+  // Moon's mean elongation
+  const D = norm360(297.8501921 + 445267.1114034 * T - 0.0018819 * T * T);
+  // Sun's mean anomaly
+  const Ms = norm360(357.5291092 + 35999.0502909 * T - 0.0001536 * T * T);
+  // Moon's mean anomaly
+  const Mm = norm360(134.9633964 + 477198.8675055 * T + 0.0087414 * T * T);
+  // Moon's argument of latitude
+  const F = norm360(93.2720950 + 483202.0175233 * T - 0.0036539 * T * T);
 
-  let longitude = L
-    + 6.289 * Math.sin(Mrad)
-    - 1.274 * Math.sin(2 * (L * Math.PI / 180) - Mrad)
-    + 0.658 * Math.sin(2 * (L * Math.PI / 180))
-    - 0.214 * Math.sin(2 * Mrad)
-    - 0.186 * Math.sin(Msrad);
+  const Dr = rad(D), Mr = rad(Ms), Mmr = rad(Mm), Fr = rad(F);
 
-  return ((longitude % 360) + 360) % 360;
+  // Principal perturbation terms (longitude, in degrees)
+  let longitude = Lp
+    + 6.289 * Math.sin(Mmr)                        // Evection
+    + 1.274 * Math.sin(2 * Dr - Mmr)               // Variation
+    + 0.658 * Math.sin(2 * Dr)                     // Variation
+    + 0.214 * Math.sin(2 * Mmr)                    // 
+    - 0.186 * Math.sin(Mr)                         // Annual equation
+    - 0.114 * Math.sin(2 * Fr)                     // Reduction to ecliptic
+    + 0.059 * Math.sin(2 * Dr - 2 * Mmr)
+    + 0.057 * Math.sin(2 * Dr - Mr - Mmr)
+    + 0.053 * Math.sin(2 * Dr + Mmr)
+    + 0.046 * Math.sin(2 * Dr - Mr)
+    - 0.041 * Math.sin(Mr - Mmr)                   // Parallactic equation
+    - 0.035 * Math.sin(Dr)                         // 
+    - 0.030 * Math.sin(Mr + Mmr);
+
+  return norm360(longitude);
 }
 
-function getRisingSignLongitude(date: Date, birthHour: number): number {
-  // Simplified: the Ascendant rotates ~1 degree every 4 minutes
-  // At sunrise (6am approx), the Ascendant ≈ Sun longitude
-  // Each hour after sunrise adds ~15 degrees
-  const sunLong = getSunLongitude(date);
+/**
+ * Rising sign approximation.
+ * Without precise geographic coordinates this uses a simplified model:
+ * At sunrise (~6am local), Ascendant ≈ Sun longitude.
+ * Each hour rotates the Ascendant by ~15°.
+ * Note: This is labeled as approximate in the UI.
+ */
+function getRisingLongitude(sunLong: number, birthHour: number): number {
   const hoursFromSunrise = birthHour - 6;
-  return ((sunLong + hoursFromSunrise * 15) % 360 + 360) % 360;
+  return norm360(sunLong + hoursFromSunrise * 15);
 }
+
+// --- Sign Determination ---
 
 function getSignFromLongitude(longitude: number): ZodiacPosition {
   const index = Math.floor(longitude / 30) % 12;
@@ -136,13 +181,26 @@ function getSignDescription(sign: string): string {
   return descriptions[sign] || sign;
 }
 
+// --- Public API ---
+
+/**
+ * Parse a date string (YYYY-MM-DD) into local year/month/day
+ * to avoid timezone-induced date shifts from Date constructor.
+ */
+function parseLocalDate(dateStr: string): { year: number; month: number; day: number } {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return { year, month, day };
+}
+
 export function calculateBirthChart(
-  birthDate: Date,
-  birthHour: number = 12 // 0-23, default noon
+  birthDateStr: string,
+  birthHour: number = 12
 ): BirthChartData {
-  const sunLong = getSunLongitude(birthDate);
-  const moonLong = getMoonLongitudeForBirth(birthDate);
-  const risingLong = getRisingSignLongitude(birthDate, birthHour);
+  const { year, month, day } = parseLocalDate(birthDateStr);
+
+  const sunLong = getSunLongitude(year, month, day, birthHour);
+  const moonLong = getMoonLongitude(year, month, day, birthHour);
+  const risingLong = getRisingLongitude(sunLong, birthHour);
 
   const sunSign = getSignFromLongitude(sunLong);
   const moonSign = getSignFromLongitude(moonLong);
@@ -150,14 +208,13 @@ export function calculateBirthChart(
 
   // Element balance
   const elementBalance: Record<string, number> = { fire: 0, water: 0, air: 0, earth: 0 };
-  elementBalance[sunSign.element] += 3;  // Sun weighted highest
-  elementBalance[moonSign.element] += 2; // Moon next
-  elementBalance[risingSign.element] += 1; // Rising last
+  elementBalance[sunSign.element] += 3;
+  elementBalance[moonSign.element] += 2;
+  elementBalance[risingSign.element] += 1;
 
   const dominantElement = Object.entries(elementBalance)
     .sort((a, b) => b[1] - a[1])[0][0];
 
-  // Collect personal cards
   const personalCards = [
     ...(SIGN_CARDS[sunSign.sign] || []),
     ...(SIGN_CARDS[moonSign.sign] || []),
@@ -198,18 +255,19 @@ function generateChartDescription(
   return `${sun.sign} Sun illuminates your conscious self while ${moon.sign} Moon colors your inner world. ${rising.sign} Rising shapes how the world first perceives you. ${elementDescriptions[dominantElement]}`;
 }
 
-// Persistence
+// --- Persistence ---
+
 const STORAGE_KEY = "vqv-birth-data";
 
 export interface StoredBirthData {
-  birthDate: string; // ISO
+  birthDate: string; // YYYY-MM-DD
   birthHour: number;
   chart: BirthChartData;
 }
 
-export function saveBirthData(birthDate: Date, birthHour: number, chart: BirthChartData): void {
+export function saveBirthData(birthDateStr: string, birthHour: number, chart: BirthChartData): void {
   const data: StoredBirthData = {
-    birthDate: birthDate.toISOString(),
+    birthDate: birthDateStr,
     birthHour,
     chart,
   };
