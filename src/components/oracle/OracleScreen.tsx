@@ -23,7 +23,7 @@ import {
   type TarotCard,
 } from "@/data/tarotCards";
 import { getCurrentCosmicWeather } from "@/data/cosmicWeather";
-import type { SpreadType } from "@/data/spreadMeanings";
+import { type SpreadType, getCardCount } from "@/data/spreadMeanings";
 
 type OracleState = "intent" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
 
@@ -54,17 +54,20 @@ const OracleScreen: React.FC = () => {
 
     setTimeout(() => {
       const intent = selectedTheme || (customIntent ? null : null);
+      const cardCount = getCardCount(spreadType);
 
-      if (spreadType === "past-present-future") {
-        // Draw 3 unique cards
-        const card1 = selectCardWithIntent(intent);
-        const card2 = selectCardWithIntent(intent, [card1.id]);
-        const card3 = selectCardWithIntent(intent, [card1.id, card2.id]);
-        setSpreadCards([card1, card2, card3]);
-        setPrimaryCard(card2); // Present card is "primary" for history
-        setEchoCards([card1, card3]);
+      if (cardCount > 1) {
+        // Draw N unique cards for the spread
+        const drawn: TarotCard[] = [];
+        for (let i = 0; i < cardCount; i++) {
+          const card = selectCardWithIntent(intent, drawn.map((c) => c.id));
+          drawn.push(card);
+        }
+        setSpreadCards(drawn);
+        setPrimaryCard(drawn[0]);
+        setEchoCards(drawn.slice(1));
 
-        saveReading(selectedTheme, customIntent || null, card2, [card1, card3], "past-present-future");
+        saveReading(selectedTheme, customIntent || null, drawn[0], drawn.slice(1), spreadType);
       } else {
         const primary = selectCardWithIntent(intent);
         const echoes = selectEchoCards(primary, intent, 2);
@@ -243,9 +246,9 @@ const OracleScreen: React.FC = () => {
               <p className="font-body text-sm md:text-base text-foreground/70 italic">
                 {cosmicWeather.dominantElement.charAt(0).toUpperCase() + cosmicWeather.dominantElement.slice(1)} energies flow through this moment
               </p>
-              {spreadType === "past-present-future" && (
+              {spreadType !== "single" && (
                 <p className="font-body text-xs text-gold/50 italic mt-2">
-                  Three threads of time await your observation…
+                  {getCardCount(spreadType)} threads of fate await your observation…
                 </p>
               )}
             </div>
@@ -261,23 +264,25 @@ const OracleScreen: React.FC = () => {
               </p>
             )}
 
-            {spreadType === "past-present-future" ? (
-              <div className="flex items-center gap-3 md:gap-5">
-                {["Past", "Present", "Future"].map((pos, i) => (
-                  <div key={pos} className="flex flex-col items-center gap-2">
-                    <span className="font-display text-xs text-gold/40 tracking-wider">{pos}</span>
-                    <div
-                      onClick={i === 1 ? handleCardClick : undefined}
-                      className={i === 1 ? "cursor-pointer" : "opacity-60"}
-                    >
-                      <CardBack
-                        onClick={i === 1 ? handleCardClick : () => {}}
-                        isAnimating={state === "collapsing"}
-                        size={i === 1 ? "full" : "small"}
-                      />
+            {spreadType !== "single" ? (
+              <div className="flex items-center justify-center gap-2 md:gap-4 flex-wrap max-w-md">
+                {Array.from({ length: getCardCount(spreadType) }).map((_, i) => {
+                  const isCenterCard = i === Math.floor(getCardCount(spreadType) / 2);
+                  return (
+                    <div key={i} className="flex flex-col items-center gap-1">
+                      <div
+                        onClick={isCenterCard ? handleCardClick : undefined}
+                        className={isCenterCard ? "cursor-pointer" : "opacity-50"}
+                      >
+                        <CardBack
+                          onClick={isCenterCard ? handleCardClick : () => {}}
+                          isAnimating={state === "collapsing"}
+                          size={isCenterCard ? "full" : "small"}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <CardBack onClick={handleCardClick} isAnimating={state === "collapsing"} />
@@ -286,7 +291,7 @@ const OracleScreen: React.FC = () => {
             <p className="font-body text-center text-sm md:text-base text-muted-foreground italic max-w-xs">
               {state === "collapsing"
                 ? "The wave collapses…"
-                : spreadType === "past-present-future"
+                : spreadType !== "single"
                 ? "Focus your intention… then touch the center card to observe"
                 : "Focus your intention… then touch to observe"}
             </p>
@@ -295,9 +300,10 @@ const OracleScreen: React.FC = () => {
 
         {/* Revealed phase */}
         {state === "revealed" && primaryCard && (
-          spreadType === "past-present-future" && spreadCards.length === 3 ? (
+          spreadType !== "single" && spreadCards.length > 0 ? (
             <SpreadReadingDisplay
               cards={spreadCards}
+              spreadType={spreadType}
               onNewReading={handleNewReading}
             />
           ) : (

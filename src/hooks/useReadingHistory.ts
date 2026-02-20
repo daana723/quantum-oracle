@@ -8,7 +8,7 @@ export interface Reading {
   customIntent: string | null;
   primaryCard: TarotCard;
   echoCards: TarotCard[];
-  spreadType?: "single" | "past-present-future";
+  spreadType?: "single" | "past-present-future" | "cross" | "celtic-cross";
 }
 
 const STORAGE_KEY = "victorian-quantum-veil-readings";
@@ -36,7 +36,7 @@ export function useReadingHistory() {
       customIntent: string | null,
       primaryCard: TarotCard,
       echoCards: TarotCard[],
-      spreadType: "single" | "past-present-future" = "single"
+      spreadType: "single" | "past-present-future" | "cross" | "celtic-cross" = "single"
     ) => {
       const newReading: Reading = {
         id: `reading-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
