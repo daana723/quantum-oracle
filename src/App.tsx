@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import CardGallery from "./pages/CardGallery";
 import CardDetail from "./pages/CardDetail";
 import Install from "./pages/Install";
+import DailyOracle from "./pages/DailyOracle";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/daily" element={<DailyOracle />} />
             <Route path="/gallery" element={<CardGallery />} />
             <Route path="/cards/:slug" element={<CardDetail />} />
             <Route path="/install" element={<Install />} />

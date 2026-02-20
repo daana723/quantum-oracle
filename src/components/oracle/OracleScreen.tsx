@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
-import { History, Info, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+import { History, Info, Sparkles, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardBack from "@/components/oracle/CardBack";
 import IntentSelector from "@/components/oracle/IntentSelector";
@@ -130,9 +131,18 @@ const OracleScreen: React.FC = () => {
           </Button>
         </HistoryDrawer>
 
-        <h1 className="font-display text-lg md:text-xl text-gold-gradient tracking-widest">
-          Victorian Quantum Veil
-        </h1>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/daily"
+            className="text-gold/60 hover:text-gold transition-colors"
+            title="Daily Oracle"
+          >
+            <Sun className="h-5 w-5" />
+          </Link>
+          <h1 className="font-display text-lg md:text-xl text-gold-gradient tracking-widest">
+            Victorian Quantum Veil
+          </h1>
+        </div>
 
         <Dialog>
           <DialogTrigger asChild>
