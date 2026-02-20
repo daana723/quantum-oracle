@@ -4,6 +4,9 @@ import {
   spreadPositions,
   getRelationalMeaning,
   getSpreadSynthesis,
+  getSpreadRelations,
+  getSpreadArc,
+  type SpreadType,
 } from "@/data/spreadMeanings";
 import CardFront from "./CardFront";
 import PlanetaryResonance from "./PlanetaryResonance";
@@ -12,110 +15,186 @@ import ShareableReading from "./ShareableReading";
 
 interface SpreadReadingDisplayProps {
   cards: TarotCard[];
+  spreadType: SpreadType;
   onNewReading: () => void;
 }
 
 const SpreadReadingDisplay: React.FC<SpreadReadingDisplayProps> = ({
   cards,
+  spreadType,
   onNewReading,
 }) => {
-  const [expandedCard, setExpandedCard] = useState<number>(1); // Start with Present
-  const positions = spreadPositions["past-present-future"];
+  const [expandedCard, setExpandedCard] = useState<number>(spreadType === "past-present-future" ? 1 : 0);
+  const positions = spreadPositions[spreadType] || [];
   const synthesis = getSpreadSynthesis(cards);
+  const relations = getSpreadRelations(spreadType);
+  const arc = getSpreadArc(spreadType);
 
-  // Relational meanings between adjacent cards
-  const relations = [
-    getRelationalMeaning(cards[0], "Past", cards[1], "Present"),
-    getRelationalMeaning(cards[1], "Present", cards[2], "Future"),
-  ];
+  const renderCardGrid = () => {
+    if (spreadType === "past-present-future") {
+      return renderLinearLayout();
+    }
+    if (spreadType === "cross") {
+      return renderCrossLayout();
+    }
+    if (spreadType === "celtic-cross") {
+      return renderCelticCrossLayout();
+    }
+    return renderLinearLayout();
+  };
 
-  // Full arc relation
-  const arcRelation = getRelationalMeaning(cards[0], "Past", cards[2], "Future");
+  const renderCardSlot = (index: number, extraClass = "") => {
+    const card = cards[index];
+    const pos = positions[index];
+    if (!card || !pos) return null;
+    return (
+      <div
+        key={card.id}
+        className={`flex flex-col items-center gap-1.5 animate-fade-in-up ${extraClass}`}
+        style={{ animationDelay: `${index * 0.15}s` }}
+      >
+        <div className="text-center mb-0.5">
+          <span className="text-gold/50 text-sm">{pos.icon}</span>
+          <p className="font-display text-[10px] md:text-xs text-gold/80 tracking-wider">
+            {pos.label}
+          </p>
+        </div>
+        <div
+          className={`cursor-pointer transition-all duration-300 ${
+            expandedCard === index
+              ? "scale-105 ring-2 ring-gold/40 rounded-lg"
+              : "opacity-70 hover:opacity-90 hover:scale-102"
+          }`}
+          onClick={() => setExpandedCard(index)}
+        >
+          <CardFront card={card} isRevealed={true} size="echo" />
+        </div>
+        <p
+          className={`font-display text-[10px] md:text-xs tracking-wider transition-colors text-center ${
+            expandedCard === index ? "text-gold" : "text-gold/50"
+          }`}
+        >
+          {card.name}
+        </p>
+      </div>
+    );
+  };
 
-  return (
-    <div className="flex flex-col items-center gap-6 md:gap-8 w-full max-w-3xl mx-auto px-4">
-      {/* Three-card layout */}
-      <div className="flex items-start justify-center gap-3 md:gap-6 w-full">
-        {cards.map((card, i) => (
-          <div
-            key={card.id}
-            className="flex flex-col items-center gap-2 animate-fade-in-up"
-            style={{ animationDelay: `${i * 0.2}s` }}
-          >
-            {/* Position label */}
-            <div className="text-center mb-1">
-              <span className="text-gold/50 text-lg">{positions[i].icon}</span>
-              <p className="font-display text-xs md:text-sm text-gold/80 tracking-wider">
-                {positions[i].label}
-              </p>
-            </div>
+  const renderLinearLayout = () => (
+    <div className="flex items-start justify-center gap-3 md:gap-6 w-full">
+      {cards.map((_, i) => renderCardSlot(i))}
+    </div>
+  );
 
-            {/* Card */}
-            <div
-              className={`cursor-pointer transition-all duration-300 ${
-                expandedCard === i
-                  ? "scale-105 ring-2 ring-gold/40 rounded-lg"
-                  : "opacity-70 hover:opacity-90 hover:scale-102"
-              }`}
-              onClick={() => setExpandedCard(i)}
-            >
-              <CardFront
-                card={card}
-                isRevealed={true}
-                size="echo"
-              />
-            </div>
-
-            {/* Card name */}
-            <p
-              className={`font-display text-xs tracking-wider transition-colors ${
-                expandedCard === i ? "text-gold" : "text-gold/50"
-              }`}
-            >
-              {card.name}
-            </p>
+  const renderCrossLayout = () => (
+    <div className="relative w-full max-w-sm mx-auto" style={{ minHeight: "340px" }}>
+      {/* Top: Potential (4) */}
+      <div className="flex justify-center mb-2">
+        {renderCardSlot(4)}
+      </div>
+      {/* Middle row: Recent Past (3), Situation (0) + Challenge (1), (empty) */}
+      <div className="flex items-center justify-center gap-2 md:gap-4 mb-2">
+        {renderCardSlot(3)}
+        <div className="relative">
+          {renderCardSlot(0)}
+          {/* Challenge overlaid slightly */}
+          <div className="absolute -right-3 -top-2 rotate-12 opacity-90 scale-90">
+            {renderCardSlot(1, "!animate-none")}
           </div>
-        ))}
+        </div>
+      </div>
+      {/* Bottom: Foundation (2) */}
+      <div className="flex justify-center mt-2">
+        {renderCardSlot(2)}
+      </div>
+    </div>
+  );
+
+  const renderCelticCrossLayout = () => (
+    <div className="flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-10 w-full">
+      {/* Left: Cross portion (cards 0-5) */}
+      <div className="relative" style={{ minWidth: "280px", minHeight: "320px" }}>
+        {/* Crown (4) - top */}
+        <div className="absolute left-1/2 -translate-x-1/2 top-0">
+          {renderCardSlot(4)}
+        </div>
+        {/* Recent Past (3) - left */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2">
+          {renderCardSlot(3)}
+        </div>
+        {/* Center: Present (0) + Challenge (1) crossed */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="relative">
+            {renderCardSlot(0)}
+            <div className="absolute -right-2 -top-1 rotate-12 opacity-90 scale-[0.85]">
+              {renderCardSlot(1, "!animate-none")}
+            </div>
+          </div>
+        </div>
+        {/* Near Future (5) - right */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2">
+          {renderCardSlot(5)}
+        </div>
+        {/* Foundation (2) - bottom */}
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-0">
+          {renderCardSlot(2)}
+        </div>
       </div>
 
-      {/* Relational arrows between cards */}
+      {/* Right: Staff (cards 6-9), bottom to top */}
+      <div className="flex md:flex-col-reverse items-center gap-2 md:gap-3">
+        {[6, 7, 8, 9].map((i) => renderCardSlot(i))}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col items-center gap-6 md:gap-8 w-full max-w-4xl mx-auto px-4">
+      {/* Card layout */}
+      {renderCardGrid()}
+
+      {/* Relational meanings */}
       <div
         className="w-full max-w-md animate-fade-in-up"
-        style={{ animationDelay: "0.6s" }}
+        style={{ animationDelay: `${cards.length * 0.15 + 0.3}s` }}
       >
-        {/* Past → Present relation */}
-        <div className="flex items-center gap-2 mb-3">
-          <span className="font-display text-xs text-gold/40 shrink-0">Past → Present</span>
-          <div className="flex-1 h-px bg-gradient-to-r from-gold/30 to-gold/10" />
-        </div>
-        <p className="font-body text-sm text-foreground/70 italic leading-relaxed mb-5">
-          {relations[0]}
-        </p>
-
-        {/* Present → Future relation */}
-        <div className="flex items-center gap-2 mb-3">
-          <span className="font-display text-xs text-gold/40 shrink-0">Present → Future</span>
-          <div className="flex-1 h-px bg-gradient-to-r from-gold/30 to-gold/10" />
-        </div>
-        <p className="font-body text-sm text-foreground/70 italic leading-relaxed mb-5">
-          {relations[1]}
-        </p>
+        {relations.map(([from, to], idx) => {
+          const fromPos = positions[from]?.label || "";
+          const toPos = positions[to]?.label || "";
+          return (
+            <div key={`${from}-${to}`} className="mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="font-display text-xs text-gold/40 shrink-0">
+                  {fromPos} → {toPos}
+                </span>
+                <div className="flex-1 h-px bg-gradient-to-r from-gold/30 to-gold/10" />
+              </div>
+              <p className="font-body text-sm text-foreground/70 italic leading-relaxed">
+                {getRelationalMeaning(cards[from], fromPos, cards[to], toPos)}
+              </p>
+            </div>
+          );
+        })}
 
         {/* Full arc */}
-        <div className="flex items-center gap-2 mb-3">
-          <span className="font-display text-xs text-gold/40 shrink-0">The Full Arc</span>
-          <div className="flex-1 h-px bg-gradient-to-r from-gold/30 via-gold/20 to-gold/30" />
-        </div>
-        <p className="font-body text-sm text-foreground/70 italic leading-relaxed">
-          {arcRelation}
-        </p>
+        {arc && (
+          <div className="mt-2">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-display text-xs text-gold/40 shrink-0">The Full Arc</span>
+              <div className="flex-1 h-px bg-gradient-to-r from-gold/30 via-gold/20 to-gold/30" />
+            </div>
+            <p className="font-body text-sm text-foreground/70 italic leading-relaxed">
+              {getRelationalMeaning(cards[arc[0]], positions[arc[0]]?.label || "", cards[arc[1]], positions[arc[1]]?.label || "")}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Expanded card interpretation */}
-      {expandedCard !== null && (
+      {expandedCard !== null && positions[expandedCard] && (
         <div
           className="w-full max-w-md p-5 rounded-lg border border-gold/20 bg-card/40 backdrop-blur-sm animate-fade-in-up"
-          style={{ animationDelay: "0.8s" }}
+          style={{ animationDelay: `${cards.length * 0.15 + 0.5}s` }}
         >
           <div className="flex items-center gap-2 mb-3">
             <span className="text-gold/50">{positions[expandedCard].icon}</span>
@@ -144,7 +223,7 @@ const SpreadReadingDisplay: React.FC<SpreadReadingDisplayProps> = ({
       {/* Elemental Synthesis */}
       <div
         className="w-full max-w-md p-4 rounded-lg bg-card/30 border border-gold/15 text-center animate-fade-in-up"
-        style={{ animationDelay: "1s" }}
+        style={{ animationDelay: `${cards.length * 0.15 + 0.7}s` }}
       >
         <h4 className="font-display text-sm text-gold/70 tracking-widest uppercase mb-2">
           Elemental Synthesis
@@ -159,7 +238,7 @@ const SpreadReadingDisplay: React.FC<SpreadReadingDisplayProps> = ({
 
       {/* Actions */}
       <div className="flex flex-col sm:flex-row items-center gap-3 mt-4">
-        <ShareableReading primaryCard={cards[1]} echoCards={[cards[0], cards[2]]} />
+        <ShareableReading primaryCard={cards[0]} echoCards={cards.slice(1)} />
         <button
           onClick={onNewReading}
           className="
@@ -170,7 +249,7 @@ const SpreadReadingDisplay: React.FC<SpreadReadingDisplayProps> = ({
             transition-all duration-300
             animate-fade-in-up
           "
-          style={{ animationDelay: "1.2s" }}
+          style={{ animationDelay: `${cards.length * 0.15 + 0.9}s` }}
         >
           ✧ New Observation ✧
         </button>
