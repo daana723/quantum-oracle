@@ -8,6 +8,7 @@ import SpreadSelector from "@/components/oracle/SpreadSelector";
 import ReadingDisplay from "@/components/oracle/ReadingDisplay";
 import SpreadReadingDisplay from "@/components/oracle/SpreadReadingDisplay";
 import HistoryDrawer from "@/components/oracle/HistoryDrawer";
+import InstallBanner from "@/components/oracle/InstallBanner";
 import {
   Dialog,
   DialogContent,
@@ -315,6 +316,9 @@ const OracleScreen: React.FC = () => {
           )
         )}
       </main>
+
+      {/* PWA Install Banner */}
+      <InstallBanner />
 
       {/* Ambient particles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
