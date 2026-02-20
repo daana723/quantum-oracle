@@ -4,7 +4,9 @@ import { History, Info, Sparkles, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardBack from "@/components/oracle/CardBack";
 import IntentSelector from "@/components/oracle/IntentSelector";
+import SpreadSelector from "@/components/oracle/SpreadSelector";
 import ReadingDisplay from "@/components/oracle/ReadingDisplay";
+import SpreadReadingDisplay from "@/components/oracle/SpreadReadingDisplay";
 import HistoryDrawer from "@/components/oracle/HistoryDrawer";
 import {
   Dialog,
@@ -21,6 +23,7 @@ import {
   type TarotCard,
 } from "@/data/tarotCards";
 import { getCurrentCosmicWeather } from "@/data/cosmicWeather";
+import type { SpreadType } from "@/data/spreadMeanings";
 
 type OracleState = "intent" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
 
@@ -28,15 +31,16 @@ const OracleScreen: React.FC = () => {
   const [state, setState] = useState<OracleState>("intent");
   const [selectedTheme, setSelectedTheme] = useState<ThemeType | null>(null);
   const [customIntent, setCustomIntent] = useState("");
+  const [spreadType, setSpreadType] = useState<SpreadType>("single");
   const [primaryCard, setPrimaryCard] = useState<TarotCard | null>(null);
   const [echoCards, setEchoCards] = useState<TarotCard[]>([]);
+  const [spreadCards, setSpreadCards] = useState<TarotCard[]>([]);
 
   const { readings, saveReading, deleteReading, clearAllReadings } = useReadingHistory();
 
   const [cosmicWeather] = useState(() => getCurrentCosmicWeather());
 
   const handleProceedToCard = useCallback(() => {
-    // Show cosmic moment briefly before the card
     setState("cosmic-moment");
     setTimeout(() => {
       setState("hidden");
@@ -48,24 +52,33 @@ const OracleScreen: React.FC = () => {
 
     setState("collapsing");
 
-    // Perform the quantum collapse after animation starts
     setTimeout(() => {
       const intent = selectedTheme || (customIntent ? null : null);
-      const primary = selectCardWithIntent(intent);
-      const echoes = selectEchoCards(primary, intent, 2);
 
-      setPrimaryCard(primary);
-      setEchoCards(echoes);
+      if (spreadType === "past-present-future") {
+        // Draw 3 unique cards
+        const card1 = selectCardWithIntent(intent);
+        const card2 = selectCardWithIntent(intent, [card1.id]);
+        const card3 = selectCardWithIntent(intent, [card1.id, card2.id]);
+        setSpreadCards([card1, card2, card3]);
+        setPrimaryCard(card2); // Present card is "primary" for history
+        setEchoCards([card1, card3]);
 
-      // Save to history
-      saveReading(selectedTheme, customIntent || null, primary, echoes);
+        saveReading(selectedTheme, customIntent || null, card2, [card1, card3], "past-present-future");
+      } else {
+        const primary = selectCardWithIntent(intent);
+        const echoes = selectEchoCards(primary, intent, 2);
+        setPrimaryCard(primary);
+        setEchoCards(echoes);
 
-      // Transition to revealed state
+        saveReading(selectedTheme, customIntent || null, primary, echoes, "single");
+      }
+
       setTimeout(() => {
         setState("revealed");
       }, 800);
     }, 700);
-  }, [state, selectedTheme, customIntent, saveReading]);
+  }, [state, selectedTheme, customIntent, spreadType, saveReading]);
 
   const handleNewReading = useCallback(() => {
     setState("intent");
@@ -73,14 +86,14 @@ const OracleScreen: React.FC = () => {
     setCustomIntent("");
     setPrimaryCard(null);
     setEchoCards([]);
+    setSpreadCards([]);
   }, []);
 
-  // Generate particle colors - gold, rose, cream mix
   const getParticleColor = (index: number) => {
     const colors = [
-      "bg-gold/20", "bg-gold/25", "bg-gold/20", "bg-gold/30", // 60% gold
-      "bg-rose-400/20", "bg-rose-300/15", "bg-rose-500/20", // 30% rose
-      "bg-amber-100/15", // 10% cream
+      "bg-gold/20", "bg-gold/25", "bg-gold/20", "bg-gold/30",
+      "bg-rose-400/20", "bg-rose-300/15", "bg-rose-500/20",
+      "bg-amber-100/15",
     ];
     return colors[index % colors.length];
   };
@@ -161,17 +174,15 @@ const OracleScreen: React.FC = () => {
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4 font-body text-foreground/80">
+              <p>This is not fortune-telling. It is a mirror for reflection.</p>
               <p>
-                This is not fortune-telling. It is a mirror for reflection.
-              </p>
-              <p>
-                Like quantum particles existing in superposition until observed, 
-                possibilities coexist until consciousness collapses them into experience. 
-                The cards you receive are not predictions—they are symbolic lenses 
+                Like quantum particles existing in superposition until observed,
+                possibilities coexist until consciousness collapses them into experience.
+                The cards you receive are not predictions—they are symbolic lenses
                 through which to examine your inner landscape.
               </p>
               <p>
-                The "echoes" represent paths not taken, parallel possibilities 
+                The "echoes" represent paths not taken, parallel possibilities
                 that remain ghostly real. Notice which resonates. Notice what you feel.
               </p>
               <p className="text-gold/60 italic text-sm">
@@ -203,6 +214,9 @@ const OracleScreen: React.FC = () => {
               onCustomIntentChange={setCustomIntent}
             />
 
+            {/* Spread selector */}
+            <SpreadSelector selected={spreadType} onSelect={setSpreadType} />
+
             <button
               onClick={handleProceedToCard}
               className="
@@ -218,7 +232,7 @@ const OracleScreen: React.FC = () => {
           </div>
         )}
 
-        {/* Cosmic Moment - bridge between intent and card */}
+        {/* Cosmic Moment */}
         {state === "cosmic-moment" && (
           <div className="flex flex-col items-center gap-6 animate-fade-in-up text-center">
             <Sparkles className="w-8 h-8 text-gold/60 animate-gentle-pulse" />
@@ -229,6 +243,11 @@ const OracleScreen: React.FC = () => {
               <p className="font-body text-sm md:text-base text-foreground/70 italic">
                 {cosmicWeather.dominantElement.charAt(0).toUpperCase() + cosmicWeather.dominantElement.slice(1)} energies flow through this moment
               </p>
+              {spreadType === "past-present-future" && (
+                <p className="font-body text-xs text-gold/50 italic mt-2">
+                  Three threads of time await your observation…
+                </p>
+              )}
             </div>
           </div>
         )}
@@ -242,11 +261,33 @@ const OracleScreen: React.FC = () => {
               </p>
             )}
 
-            <CardBack onClick={handleCardClick} isAnimating={state === "collapsing"} />
+            {spreadType === "past-present-future" ? (
+              <div className="flex items-center gap-3 md:gap-5">
+                {["Past", "Present", "Future"].map((pos, i) => (
+                  <div key={pos} className="flex flex-col items-center gap-2">
+                    <span className="font-display text-xs text-gold/40 tracking-wider">{pos}</span>
+                    <div
+                      onClick={i === 1 ? handleCardClick : undefined}
+                      className={i === 1 ? "cursor-pointer" : "opacity-60"}
+                    >
+                      <CardBack
+                        onClick={i === 1 ? handleCardClick : () => {}}
+                        isAnimating={state === "collapsing"}
+                        size={i === 1 ? "full" : "small"}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <CardBack onClick={handleCardClick} isAnimating={state === "collapsing"} />
+            )}
 
             <p className="font-body text-center text-sm md:text-base text-muted-foreground italic max-w-xs">
               {state === "collapsing"
                 ? "The wave collapses…"
+                : spreadType === "past-present-future"
+                ? "Focus your intention… then touch the center card to observe"
                 : "Focus your intention… then touch to observe"}
             </p>
           </div>
@@ -254,11 +295,18 @@ const OracleScreen: React.FC = () => {
 
         {/* Revealed phase */}
         {state === "revealed" && primaryCard && (
-          <ReadingDisplay
-            primaryCard={primaryCard}
-            echoCards={echoCards}
-            onNewReading={handleNewReading}
-          />
+          spreadType === "past-present-future" && spreadCards.length === 3 ? (
+            <SpreadReadingDisplay
+              cards={spreadCards}
+              onNewReading={handleNewReading}
+            />
+          ) : (
+            <ReadingDisplay
+              primaryCard={primaryCard}
+              echoCards={echoCards}
+              onNewReading={handleNewReading}
+            />
+          )
         )}
       </main>
 

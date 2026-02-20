@@ -3,14 +3,19 @@ import React from "react";
 interface CardBackProps {
   onClick: () => void;
   isAnimating: boolean;
+  size?: "full" | "small";
 }
 
-const CardBack: React.FC<CardBackProps> = ({ onClick, isAnimating }) => {
+const CardBack: React.FC<CardBackProps> = ({ onClick, isAnimating, size = "full" }) => {
+  const isSmall = size === "small";
+  const sizeClasses = isSmall
+    ? "w-32 h-48 md:w-36 md:h-54"
+    : "w-64 h-96 md:w-72 md:h-[432px]";
   return (
     <div
       onClick={!isAnimating ? onClick : undefined}
       className={`
-        relative w-64 h-96 md:w-72 md:h-[432px] cursor-pointer
+        relative ${sizeClasses} cursor-pointer
         transform transition-all duration-300
         ${!isAnimating ? "hover:scale-105 hover:glow-gold-intense" : ""}
         ${isAnimating ? "animate-wave-collapse" : "animate-gentle-pulse"}
