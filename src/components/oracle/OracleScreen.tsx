@@ -406,8 +406,6 @@ const OracleScreen: React.FC = () => {
         )}
       </main>
 
-      {/* Install banner — only shown on initial intent screen */}
-      {state === "intent" && <InstallBanner />}
 
       {/* Ambient particles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
