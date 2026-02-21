@@ -76,7 +76,7 @@ const MinorArcanaGallery: React.FC = () => {
                       )}
                     </div>
                     <span className="text-xs text-gold/70 group-hover:text-gold font-body text-center transition-colors">
-                      {card.isGroup ? `IV–X` : card.name}
+                      {card.name}
                     </span>
                   </div>
                 );
