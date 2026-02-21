@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { History, Info, Sparkles, Sun, BarChart3, Moon, User, LayoutGrid, Calendar } from "lucide-react";
+import { History, Info, Sparkles, Sun, BarChart3, Moon, User, LayoutGrid, Calendar, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardBack from "@/components/oracle/CardBack";
 import IntentSelector from "@/components/oracle/IntentSelector";
@@ -10,6 +10,7 @@ import SpreadReadingDisplay from "@/components/oracle/SpreadReadingDisplay";
 import HistoryDrawer from "@/components/oracle/HistoryDrawer";
 import InstallBanner from "@/components/oracle/InstallBanner";
 import GuidedMeditation from "@/components/oracle/GuidedMeditation";
+import NotificationSettings from "@/components/oracle/NotificationSettings";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +18,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useReadingHistory } from "@/hooks/useReadingHistory";
 import {
   selectCardWithIntent,
@@ -196,6 +202,19 @@ const OracleScreen: React.FC = () => {
           >
             <Calendar className="h-5 w-5" />
           </Link>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className="text-gold/60 hover:text-gold transition-colors"
+                title="Daily Notifications"
+              >
+                <Bell className="h-5 w-5" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 bg-card border-border" align="end">
+              <NotificationSettings />
+            </PopoverContent>
+          </Popover>
           <h1 className="font-display text-lg md:text-xl text-gold-gradient tracking-widest">
             Victorian Quantum Veil
           </h1>
