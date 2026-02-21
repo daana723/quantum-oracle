@@ -86,7 +86,14 @@ const LunarCalendar: React.FC = () => {
     <>
       <Helmet>
         <title>Lunar Calendar — Victorian Quantum Veil</title>
-        <meta name="description" content="Monthly moon phase calendar with optimal reading days and planetary hour tracking." />
+        <meta name="description" content="Monthly moon phase calendar with optimal reading days and planetary hour tracking for your tarot practice." />
+        <meta property="og:title" content="Lunar Calendar — Victorian Quantum Veil" />
+        <meta property="og:description" content="Track moon phases, optimal reading days, and planetary hours for your mystical practice." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Lunar Calendar — Victorian Quantum Veil" />
+        <meta name="twitter:description" content="Monthly moon phase calendar with optimal reading days and planetary hour tracking." />
+        <link rel="canonical" href="/lunar-calendar" />
       </Helmet>
 
       <div className="min-h-screen bg-cosmic bg-nebula-overlay bg-vignette flex flex-col relative">

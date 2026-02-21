@@ -41,10 +41,22 @@ const DailyOracle: React.FC = () => {
     <>
       <Helmet>
         <title>Daily Oracle — {card.name} | Victorian Quantum Veil</title>
-        <meta
-          name="description"
-          content={`Today's cosmic oracle: ${card.name}. ${weather.moonPhase} — ${weather.cosmicClimate.slice(0, 120)}`}
-        />
+        <meta name="description" content={`Today's cosmic oracle: ${card.name}. ${weather.moonPhase} — ${weather.cosmicClimate.slice(0, 120)}`} />
+        <meta property="og:title" content={`Daily Oracle — ${card.name}`} />
+        <meta property="og:description" content={`Today's reflection: ${card.name}. ${card.keywords.join(", ")}.`} />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`Daily Oracle — ${card.name}`} />
+        <meta name="twitter:description" content={`Today's cosmic oracle: ${card.name}. Explore the card's meaning and cosmic weather.`} />
+        <link rel="canonical" href="/daily" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: `Daily Oracle — ${card.name}`,
+          description: `Today's cosmic oracle: ${card.name}. ${weather.moonPhase}.`,
+          author: { "@type": "Organization", name: "Victorian Quantum Veil" },
+          datePublished: dateStr,
+        })}</script>
       </Helmet>
 
       <div className="min-h-screen bg-cosmic bg-nebula-overlay bg-vignette flex flex-col relative">
