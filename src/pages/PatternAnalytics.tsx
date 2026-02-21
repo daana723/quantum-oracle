@@ -65,6 +65,13 @@ const PatternAnalytics: React.FC = () => {
       <Helmet>
         <title>Pattern Analytics — Victorian Quantum Veil</title>
         <meta name="description" content="Discover recurring patterns in your tarot readings — cards, elements, and themes over time." />
+        <meta property="og:title" content="Pattern Analytics — Victorian Quantum Veil" />
+        <meta property="og:description" content="Discover recurring patterns in your tarot readings — cards, elements, and themes over time." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Pattern Analytics — Victorian Quantum Veil" />
+        <meta name="twitter:description" content="Track recurring cards, elements, and themes across your tarot reading history." />
+        <link rel="canonical" href="/patterns" />
       </Helmet>
 
       <div className="min-h-screen bg-cosmic bg-nebula-overlay bg-vignette">

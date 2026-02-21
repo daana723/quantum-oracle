@@ -33,6 +33,13 @@ const BirthChart: React.FC = () => {
       <Helmet>
         <title>Birth Chart — Victorian Quantum Veil</title>
         <meta name="description" content="Calculate your Sun, Moon, and Rising signs using pure astronomical math. Discover which tarot cards resonate with your natal chart." />
+        <meta property="og:title" content="Birth Chart Calculator — Victorian Quantum Veil" />
+        <meta property="og:description" content="Calculate your Sun, Moon, and Rising signs. Discover which tarot cards resonate with your natal chart." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Birth Chart Calculator — Victorian Quantum Veil" />
+        <meta name="twitter:description" content="Calculate your cosmic triad and discover your resonant tarot cards." />
+        <link rel="canonical" href="/birth-chart" />
       </Helmet>
 
       <div className="min-h-screen bg-cosmic bg-nebula-overlay bg-vignette flex flex-col relative">

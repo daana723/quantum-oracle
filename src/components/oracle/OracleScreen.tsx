@@ -122,9 +122,19 @@ const OracleScreen: React.FC = () => {
       <meta property="og:title" content="Victorian Quantum Veil — Tarot Oracle" />
       <meta property="og:description" content="A meditative tarot reflection oracle with quantum astrology and cosmic weather." />
       <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content="Victorian Quantum Veil — Tarot Oracle" />
       <meta name="twitter:description" content="Draw a card from the quantum veil. Explore cosmic weather & planetary resonance." />
       <link rel="canonical" href="/" />
+      <script type="application/ld+json">{JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        name: "Victorian Quantum Veil",
+        description: "A meditative tarot oracle blending quantum metaphor with cosmic astrology.",
+        applicationCategory: "LifestyleApplication",
+        operatingSystem: "Any",
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      })}</script>
     </Helmet>
     <div className="min-h-screen bg-cosmic bg-nebula-overlay bg-vignette flex flex-col relative">
       {/* Twinkling stars layer */}

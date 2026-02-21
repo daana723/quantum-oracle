@@ -39,6 +39,13 @@ const Install: React.FC = () => {
     <Helmet>
       <title>Install Quantum Veil — Victorian Quantum Veil</title>
       <meta name="description" content="Install the Victorian Quantum Veil tarot oracle as a progressive web app for offline access and instant loading." />
+      <meta property="og:title" content="Install Quantum Veil" />
+      <meta property="og:description" content="Add the tarot oracle to your home screen for offline access and instant loading." />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:title" content="Install Quantum Veil" />
+      <meta name="twitter:description" content="Install the Victorian Quantum Veil oracle as a progressive web app." />
+      <link rel="canonical" href="/install" />
     </Helmet>
     <div className="min-h-screen bg-cosmic bg-nebula-overlay bg-vignette flex flex-col items-center justify-center px-4 relative">
       <div className="max-w-md w-full text-center space-y-8">

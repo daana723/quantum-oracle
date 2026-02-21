@@ -34,6 +34,13 @@ const RitualCalendar: React.FC = () => {
       <Helmet>
         <title>Ritual Calendar — Victorian Quantum Veil</title>
         <meta name="description" content="Solstices, equinoxes, retrogrades, and sabbats mapped to tarot spreads and themes for your mystical practice." />
+        <meta property="og:title" content="Ritual Calendar — Victorian Quantum Veil" />
+        <meta property="og:description" content="Solstices, equinoxes, retrogrades, and sabbats mapped to tarot spreads for your mystical practice." />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Ritual Calendar — Victorian Quantum Veil" />
+        <meta name="twitter:description" content="Solstices, equinoxes, retrogrades, and sabbats mapped to tarot spreads and themes." />
+        <link rel="canonical" href="/rituals" />
       </Helmet>
 
       <div className="min-h-screen bg-cosmic bg-nebula-overlay bg-vignette relative">

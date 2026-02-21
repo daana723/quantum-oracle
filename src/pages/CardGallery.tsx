@@ -37,9 +37,17 @@ const CardGallery: React.FC = () => {
       <meta property="og:title" content="Major Arcana Gallery — Victorian Quantum Veil" />
       <meta property="og:description" content="Browse all 22 Major Arcana tarot cards with original artwork and detailed interpretations." />
       <meta property="og:type" content="website" />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content="Major Arcana Gallery — Victorian Quantum Veil" />
       <meta name="twitter:description" content="Browse all 22 Major Arcana tarot cards with original artwork and detailed interpretations." />
       <link rel="canonical" href="/gallery" />
+      <script type="application/ld+json">{JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        name: "Major Arcana Gallery",
+        description: "Browse all 22 Major Arcana tarot cards with original artwork and detailed interpretations.",
+        numberOfItems: 22,
+      })}</script>
     </Helmet>
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="flex items-center justify-between mb-6">
