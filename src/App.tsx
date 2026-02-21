@@ -14,6 +14,7 @@ import PatternAnalytics from "./pages/PatternAnalytics";
 import BirthChart from "./pages/BirthChart";
 import RitualCalendar from "./pages/RitualCalendar";
 import LunarCalendar from "./pages/LunarCalendar";
+import MinorArcanaGallery from "./pages/MinorArcanaGallery";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/lunar-calendar" element={<LunarCalendar />} />
             <Route path="/rituals" element={<RitualCalendar />} />
             <Route path="/install" element={<Install />} />
+            <Route path="/vault-minor" element={<MinorArcanaGallery />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
