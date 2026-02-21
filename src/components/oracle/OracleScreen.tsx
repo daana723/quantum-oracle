@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { History, Info, Sparkles, Sun, BarChart3, Moon, User, LayoutGrid } from "lucide-react";
+import { History, Info, Sparkles, Sun, BarChart3, Moon, User, LayoutGrid, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardBack from "@/components/oracle/CardBack";
 import IntentSelector from "@/components/oracle/IntentSelector";
@@ -9,6 +9,7 @@ import ReadingDisplay from "@/components/oracle/ReadingDisplay";
 import SpreadReadingDisplay from "@/components/oracle/SpreadReadingDisplay";
 import HistoryDrawer from "@/components/oracle/HistoryDrawer";
 import InstallBanner from "@/components/oracle/InstallBanner";
+import GuidedMeditation from "@/components/oracle/GuidedMeditation";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +27,7 @@ import {
 import { getCurrentCosmicWeather } from "@/data/cosmicWeather";
 import { type SpreadType, getCardCount } from "@/data/spreadMeanings";
 
-type OracleState = "intent" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
+type OracleState = "intent" | "meditation" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
 
 const OracleScreen: React.FC = () => {
   const [state, setState] = useState<OracleState>("intent");
@@ -42,6 +43,10 @@ const OracleScreen: React.FC = () => {
   const [cosmicWeather] = useState(() => getCurrentCosmicWeather());
 
   const handleProceedToCard = useCallback(() => {
+    setState("meditation");
+  }, []);
+
+  const handleMeditationComplete = useCallback(() => {
     setState("cosmic-moment");
     setTimeout(() => {
       setState("hidden");
@@ -184,6 +189,13 @@ const OracleScreen: React.FC = () => {
           >
             <Sun className="h-5 w-5" />
           </Link>
+          <Link
+            to="/rituals"
+            className="text-gold/60 hover:text-gold transition-colors"
+            title="Ritual Calendar"
+          >
+            <Calendar className="h-5 w-5" />
+          </Link>
           <h1 className="font-display text-lg md:text-xl text-gold-gradient tracking-widest">
             Victorian Quantum Veil
           </h1>
@@ -262,6 +274,14 @@ const OracleScreen: React.FC = () => {
               Approach the Veil
             </button>
           </div>
+        )}
+
+        {/* Guided Meditation */}
+        {state === "meditation" && (
+          <GuidedMeditation
+            onComplete={handleMeditationComplete}
+            onSkip={handleMeditationComplete}
+          />
         )}
 
         {/* Cosmic Moment */}
