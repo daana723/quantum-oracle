@@ -12,6 +12,7 @@ import Install from "./pages/Install";
 import DailyOracle from "./pages/DailyOracle";
 import PatternAnalytics from "./pages/PatternAnalytics";
 import BirthChart from "./pages/BirthChart";
+import RitualCalendar from "./pages/RitualCalendar";
 import LunarCalendar from "./pages/LunarCalendar";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/patterns" element={<PatternAnalytics />} />
             <Route path="/birth-chart" element={<BirthChart />} />
             <Route path="/lunar-calendar" element={<LunarCalendar />} />
+            <Route path="/rituals" element={<RitualCalendar />} />
             <Route path="/install" element={<Install />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
