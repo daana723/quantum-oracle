@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://victorianquantumveil.app/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
+  <url><loc>https://victorianquantumveil.app/daily</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
+  <url><loc>https://victorianquantumveil.app/gallery</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/lunar-calendar</loc><changefreq>daily</changefreq><priority>0.7</priority></url>
+  <url><loc>https://victorianquantumveil.app/rituals</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://victorianquantumveil.app/birth-chart</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://victorianquantumveil.app/patterns</loc><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://victorianquantumveil.app/install</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <!-- Major Arcana Card Detail Pages -->
+  <url><loc>https://victorianquantumveil.app/cards/the-fool</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-magician</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-high-priestess</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-empress</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-emperor</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-hierophant</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-lovers</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-chariot</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/strength</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-hermit</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/wheel-of-fortune</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/justice</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-hanged-man</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/death</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/temperance</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-devil</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-tower</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-star</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-moon</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-sun</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/judgement</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://victorianquantumveil.app/cards/the-world</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+</urlset>

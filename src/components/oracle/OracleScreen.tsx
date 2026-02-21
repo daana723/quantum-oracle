@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { History, Info, Sparkles, Sun, BarChart3, Moon, User, LayoutGrid, Calendar, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -114,6 +115,17 @@ const OracleScreen: React.FC = () => {
   };
 
   return (
+    <>
+    <Helmet>
+      <title>Victorian Quantum Veil — Tarot Oracle & Cosmic Reflection</title>
+      <meta name="description" content="A meditative tarot oracle blending quantum metaphor with cosmic astrology. Draw a card, explore planetary resonance, and reflect on archetypal wisdom." />
+      <meta property="og:title" content="Victorian Quantum Veil — Tarot Oracle" />
+      <meta property="og:description" content="A meditative tarot reflection oracle with quantum astrology and cosmic weather." />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:title" content="Victorian Quantum Veil — Tarot Oracle" />
+      <meta name="twitter:description" content="Draw a card from the quantum veil. Explore cosmic weather & planetary resonance." />
+      <link rel="canonical" href="/" />
+    </Helmet>
     <div className="min-h-screen bg-cosmic bg-nebula-overlay bg-vignette flex flex-col relative">
       {/* Twinkling stars layer */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
@@ -403,6 +415,7 @@ const OracleScreen: React.FC = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };
 

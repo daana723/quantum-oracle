@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useCallback } from "react";
+import { FileText } from "lucide-react";
 import type { TarotCard } from "@/data/tarotCards";
 import CardFront from "./CardFront";
 import PlanetaryResonance from "./PlanetaryResonance";
 import CosmicWeatherPanel from "./CosmicWeatherPanel";
 import QuantumAstrologyWidget from "./QuantumAstrologyWidget";
 import ShareableReading from "./ShareableReading";
+import KofiButton from "./KofiButton";
 
 interface ReadingDisplayProps {
   primaryCard: TarotCard;
@@ -18,6 +20,11 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
   onNewReading,
 }) => {
   const [expandedEcho, setExpandedEcho] = React.useState<number | null>(null);
+
+  const handleDownloadPdf = useCallback(async () => {
+    const { generateReadingPdf } = await import("@/lib/generateReadingPdf");
+    await generateReadingPdf(primaryCard, echoCards);
+  }, [primaryCard, echoCards]);
 
   return (
     <div className="flex flex-col items-center gap-6 md:gap-8 w-full max-w-2xl mx-auto px-4">
@@ -103,8 +110,23 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
       </div>
 
       {/* Action buttons */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 mt-4 md:mt-6">
+      <div className="flex flex-col sm:flex-row items-center gap-3 mt-4 md:mt-6 flex-wrap justify-center">
         <ShareableReading primaryCard={primaryCard} echoCards={echoCards} />
+        <button
+          onClick={handleDownloadPdf}
+          className="
+            px-6 md:px-8 py-2.5 md:py-3 rounded-full
+            font-display text-sm md:text-base tracking-wider
+            border border-gold/40 text-gold/80
+            bg-transparent hover:bg-gold/10 hover:border-gold hover:text-gold
+            transition-all duration-300 flex items-center gap-2
+            animate-fade-in-up
+          "
+          style={{ animationDelay: "1.7s" }}
+        >
+          <FileText className="w-4 h-4" />
+          PDF Report
+        </button>
         <button
           onClick={onNewReading}
           className="
@@ -115,10 +137,15 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
             transition-all duration-300
             animate-fade-in-up
           "
-          style={{ animationDelay: "1.6s" }}
+          style={{ animationDelay: "1.8s" }}
         >
           ✧ New Observation ✧
         </button>
+      </div>
+
+      {/* Ko-fi tip jar */}
+      <div className="mt-4 animate-fade-in-up" style={{ animationDelay: "2s" }}>
+        <KofiButton />
       </div>
     </div>
   );

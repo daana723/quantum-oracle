@@ -1,4 +1,5 @@
 import React, { useCallback } from "react";
+import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { Download } from "lucide-react";
 import { cardImages } from "@/assets/cards";
@@ -29,6 +30,17 @@ const CardGallery: React.FC = () => {
   }, []);
 
   return (
+    <>
+    <Helmet>
+      <title>Major Arcana Gallery — Victorian Quantum Veil</title>
+      <meta name="description" content="Browse all 22 Major Arcana tarot cards with original artwork. Explore detailed meanings, symbolism, and cosmic associations for each card." />
+      <meta property="og:title" content="Major Arcana Gallery — Victorian Quantum Veil" />
+      <meta property="og:description" content="Browse all 22 Major Arcana tarot cards with original artwork and detailed interpretations." />
+      <meta property="og:type" content="website" />
+      <meta name="twitter:title" content="Major Arcana Gallery — Victorian Quantum Veil" />
+      <meta name="twitter:description" content="Browse all 22 Major Arcana tarot cards with original artwork and detailed interpretations." />
+      <link rel="canonical" href="/gallery" />
+    </Helmet>
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-2xl text-gold">All 22 Major Arcana</h1>
@@ -72,6 +84,7 @@ const CardGallery: React.FC = () => {
         })}
       </div>
     </div>
+    </>
   );
 };
 
