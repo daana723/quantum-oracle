@@ -6,6 +6,7 @@ import { majorArcana } from "@/data/tarotCards";
 import { cardInterpretations, type CardInterpretation } from "@/data/cardInterpretations";
 import { cardImages } from "@/assets/cards";
 import { elementInfo, getPlanetaryResonance } from "@/data/cosmicWeather";
+import AffiliateLinks from "@/components/oracle/AffiliateLinks";
 
 const CardDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -211,6 +212,9 @@ const CardDetail: React.FC = () => {
               "{interpretation.affirmation}"
             </p>
           </section>
+
+          {/* Affiliate Links */}
+          <AffiliateLinks cardName={card.name} className="mb-12" />
 
           {/* Divider */}
           <div className="w-full h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent mb-12" />

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { Download, Smartphone, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -34,6 +35,11 @@ const Install: React.FC = () => {
   };
 
   return (
+    <>
+    <Helmet>
+      <title>Install Quantum Veil — Victorian Quantum Veil</title>
+      <meta name="description" content="Install the Victorian Quantum Veil tarot oracle as a progressive web app for offline access and instant loading." />
+    </Helmet>
     <div className="min-h-screen bg-cosmic bg-nebula-overlay bg-vignette flex flex-col items-center justify-center px-4 relative">
       <div className="max-w-md w-full text-center space-y-8">
         <Smartphone className="w-12 h-12 text-gold/70 mx-auto" />
@@ -81,6 +87,7 @@ const Install: React.FC = () => {
         </Link>
       </div>
     </div>
+    </>
   );
 };
 
