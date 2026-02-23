@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
-import { History, Info, Sparkles, Sun, BarChart3, Moon, User, LayoutGrid, Calendar, Bell } from "lucide-react";
+import { History, Info, Sparkles, Sun, BarChart3, Moon, User, LayoutGrid, Calendar, Bell, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CardBack from "@/components/oracle/CardBack";
 import IntentSelector from "@/components/oracle/IntentSelector";
@@ -223,6 +223,13 @@ const OracleScreen: React.FC = () => {
             title="Ritual Calendar"
           >
             <Calendar className="h-5 w-5" />
+          </Link>
+          <Link
+            to="/install"
+            className="text-gold/60 hover:text-gold transition-colors"
+            title="Install App"
+          >
+            <Download className="h-5 w-5" />
           </Link>
           <Popover>
             <PopoverTrigger asChild>
