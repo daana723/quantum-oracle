@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Download, X } from "lucide-react";
+import React, { useState, useEffect, useMemo } from "react";
+import { Download, X, Share, MoreVertical, Monitor } from "lucide-react";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -9,20 +9,28 @@ interface BeforeInstallPromptEvent extends Event {
 const DISMISS_KEY = "pwa-banner-dismissed";
 const DISMISS_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 
+type Platform = "ios" | "android" | "desktop";
+
+function detectPlatform(): Platform {
+  const ua = navigator.userAgent || "";
+  if (/iPad|iPhone|iPod/.test(ua)) return "ios";
+  if (/Android/.test(ua)) return "android";
+  return "desktop";
+}
+
 const InstallBanner: React.FC = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
-  const [dismissed, setDismissed] = useState(true); // start hidden
+  const [dismissed, setDismissed] = useState(true);
   const [visible, setVisible] = useState(false);
+  const platform = useMemo(() => detectPlatform(), []);
 
   useEffect(() => {
-    // Check if already installed
     if (window.matchMedia("(display-mode: standalone)").matches) {
       setIsInstalled(true);
       return;
     }
 
-    // Check if dismissed recently
     const dismissedAt = localStorage.getItem(DISMISS_KEY);
     if (dismissedAt && Date.now() - Number(dismissedAt) < DISMISS_DURATION) {
       return;
@@ -36,7 +44,6 @@ const InstallBanner: React.FC = () => {
     };
     window.addEventListener("beforeinstallprompt", handler);
 
-    // Show banner after a short delay for non-Chrome/Android users too
     const timer = setTimeout(() => setVisible(true), 3000);
 
     return () => {
@@ -63,6 +70,29 @@ const InstallBanner: React.FC = () => {
 
   if (isInstalled || dismissed) return null;
 
+  const platformInstructions = {
+    ios: {
+      icon: <Share className="w-4 h-4 text-primary inline-block" />,
+      text: (
+        <>Tap <Share className="w-3.5 h-3.5 inline-block text-primary mx-0.5 -mt-0.5" /> Share then <span className="text-primary font-medium">"Add to Home Screen"</span></>
+      ),
+    },
+    android: {
+      icon: <MoreVertical className="w-4 h-4 text-primary inline-block" />,
+      text: (
+        <>Tap <MoreVertical className="w-3.5 h-3.5 inline-block text-primary mx-0.5 -mt-0.5" /> menu then <span className="text-primary font-medium">"Install app"</span></>
+      ),
+    },
+    desktop: {
+      icon: <Monitor className="w-4 h-4 text-primary inline-block" />,
+      text: (
+        <>Use your browser menu → <span className="text-primary font-medium">"Install app"</span> or press <kbd className="px-1 py-0.5 rounded bg-muted text-xs font-mono">Ctrl+D</kbd></>
+      ),
+    },
+  };
+
+  const instructions = platformInstructions[platform];
+
   return (
     <div
       className={`
@@ -88,32 +118,39 @@ const InstallBanner: React.FC = () => {
             <p className="font-display text-sm text-primary tracking-wider">
               Install the Oracle
             </p>
-            <p className="font-body text-xs text-muted-foreground mt-1 leading-relaxed">
-              Add to your home screen for offline readings, instant access, and a native app experience.
-            </p>
-            <div className="flex items-center gap-2 mt-3">
-              {deferredPrompt ? (
+            {deferredPrompt ? (
+              <>
+                <p className="font-body text-xs text-muted-foreground mt-1 leading-relaxed">
+                  Add to your home screen for offline readings and instant access.
+                </p>
+                <div className="flex items-center gap-2 mt-3">
+                  <button
+                    onClick={handleInstall}
+                    className="px-4 py-1.5 rounded-full font-display text-xs tracking-wider border border-primary/50 text-primary bg-primary/10 hover:bg-primary/20 transition-all"
+                  >
+                    Install Now
+                  </button>
+                  <button
+                    onClick={handleDismiss}
+                    className="px-3 py-1.5 font-body text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Not now
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="font-body text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                  {instructions.text}
+                </p>
                 <button
-                  onClick={handleInstall}
-                  className="px-4 py-1.5 rounded-full font-display text-xs tracking-wider border border-primary/50 text-primary bg-primary/10 hover:bg-primary/20 transition-all"
+                  onClick={handleDismiss}
+                  className="mt-2 px-3 py-1 font-body text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Install Now
+                  Got it
                 </button>
-              ) : (
-                <a
-                  href="/install"
-                  className="px-4 py-1.5 rounded-full font-display text-xs tracking-wider border border-primary/50 text-primary bg-primary/10 hover:bg-primary/20 transition-all"
-                >
-                  How to Install
-                </a>
-              )}
-              <button
-                onClick={handleDismiss}
-                className="px-3 py-1.5 font-body text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Not now
-              </button>
-            </div>
+              </>
+            )}
           </div>
         </div>
       </div>
