@@ -89,13 +89,23 @@ Deno.serve(async (req) => {
       );
     }
 
-    // 3. Set bot description shown in the chat list / profile
+    // 3. Set the long description (shown on the bot's profile page)
     await fetch(`${GATEWAY_URL}/setMyDescription`, {
       method: "POST",
       headers,
       body: JSON.stringify({
         description:
-          "A meditative tarot oracle blending quantum metaphor with cosmic astrology. Tap the menu button to launch.",
+          "✨ Welcome to the Quantum Veil Oracle ✨\n\nA meditative tarot experience blending quantum metaphor with cosmic astrology. Draw cards, explore spreads, and reflect on the cosmic weather.\n\nTap the 🔮 menu button below to launch the app inside Telegram.",
+      }),
+    });
+
+    // 4. Set the short description (shown in the chat list & link previews)
+    await fetch(`${GATEWAY_URL}/setMyShortDescription`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        short_description:
+          "Tap the menu button to open the Quantum Veil Oracle Mini App. 🔮",
       }),
     });
 
