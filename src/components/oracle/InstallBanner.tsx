@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Download, X, Share, MoreVertical, Monitor } from "lucide-react";
+import { isTelegramMiniApp } from "@/lib/telegramMiniApp";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -26,6 +27,11 @@ const InstallBanner: React.FC = () => {
   const platform = useMemo(() => detectPlatform(), []);
 
   useEffect(() => {
+    // Hide banner when running inside Telegram Mini App — install doesn't apply there
+    if (isTelegramMiniApp()) {
+      setIsInstalled(true);
+      return;
+    }
     if (window.matchMedia("(display-mode: standalone)").matches) {
       setIsInstalled(true);
       return;
