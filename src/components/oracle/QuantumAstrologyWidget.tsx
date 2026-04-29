@@ -82,6 +82,12 @@ const QuantumAstrologyWidget: React.FC<QuantumAstrologyWidgetProps> = ({ classNa
             ))}
           </>
         )}
+
+        {/* Honest disclaimer */}
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-primary/15 to-transparent my-3" />
+        <p className="font-body text-[10px] text-muted-foreground/70 italic text-center leading-relaxed">
+          ✦ Astrological cues are calculated from approximate astronomical models, not live ephemeris data. Offered for intuitive reflection, not predictive guidance. ✦
+        </p>
       </div>
     </div>
   );
