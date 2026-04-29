@@ -245,7 +245,8 @@ const OracleScreen: React.FC = () => {
             </PopoverContent>
           </Popover>
           <h1 className="font-display text-lg md:text-xl text-gold-gradient tracking-widest">
-            Victorian Quantum Veil
+            <span className="md:hidden">Quantum Veil</span>
+            <span className="hidden md:inline">Victorian Quantum Veil</span>
           </h1>
         </div>
 
