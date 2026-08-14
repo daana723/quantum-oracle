@@ -1,3 +1,5 @@
+import { randomInt } from "@/lib/quantumEntropy";
+
 export interface TarotCard {
   id: number;
   name: string;
@@ -280,15 +282,15 @@ export const themeCardWeights: Record<string, number[]> = {
 
 export type ThemeType = keyof typeof themeCardWeights;
 
-export function selectCardWithIntent(
+export async function selectCardWithIntent(
   intent: ThemeType | string | null,
   excludeIds: number[] = []
-): TarotCard {
+): Promise<TarotCard> {
   const availableCards = majorArcana.filter((card) => !excludeIds.includes(card.id));
-  
+
   if (!intent || !themeCardWeights[intent as ThemeType]) {
-    // Pure random selection
-    const randomIndex = Math.floor(Math.random() * availableCards.length);
+    // Pure random selection, seeded by quantum entropy when available
+    const randomIndex = await randomInt(availableCards.length);
     return availableCards[randomIndex];
   }
 
@@ -302,11 +304,11 @@ export function selectCardWithIntent(
   });
 
   const totalWeight = weights.reduce((sum, w) => sum + w, 0);
-  let random = Math.random() * totalWeight;
+  let random = await randomInt(totalWeight);
 
   for (let i = 0; i < availableCards.length; i++) {
     random -= weights[i];
-    if (random <= 0) {
+    if (random < 0) {
       return availableCards[i];
     }
   }
@@ -314,19 +316,20 @@ export function selectCardWithIntent(
   return availableCards[availableCards.length - 1];
 }
 
-export function selectEchoCards(
+export async function selectEchoCards(
   primaryCard: TarotCard,
   intent: ThemeType | string | null,
   count: number = 2
-): TarotCard[] {
+): Promise<TarotCard[]> {
   const echoes: TarotCard[] = [];
   const excludeIds = [primaryCard.id];
 
   for (let i = 0; i < count; i++) {
-    const echo = selectCardWithIntent(intent, excludeIds);
+    const echo = await selectCardWithIntent(intent, excludeIds);
     echoes.push(echo);
     excludeIds.push(echo.id);
   }
 
   return echoes;
 }
+

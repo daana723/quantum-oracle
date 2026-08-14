@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { History, Info, Sparkles, Sun, BarChart3, Moon, User, LayoutGrid, Calendar, Bell, Download } from "lucide-react";
@@ -33,6 +33,11 @@ import {
 } from "@/data/tarotCards";
 import { getCurrentCosmicWeather } from "@/data/cosmicWeather";
 import { type SpreadType, getCardCount } from "@/data/spreadMeanings";
+import {
+  primeEntropyPool,
+  getLastEntropySource,
+  type EntropySource,
+} from "@/lib/quantumEntropy";
 
 type OracleState = "intent" | "meditation" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
 
@@ -44,10 +49,17 @@ const OracleScreen: React.FC = () => {
   const [primaryCard, setPrimaryCard] = useState<TarotCard | null>(null);
   const [echoCards, setEchoCards] = useState<TarotCard[]>([]);
   const [spreadCards, setSpreadCards] = useState<TarotCard[]>([]);
+  const [entropySource, setEntropySource] = useState<EntropySource>("local");
 
   const { readings, saveReading, deleteReading, clearAllReadings } = useReadingHistory();
 
   const [cosmicWeather] = useState(() => getCurrentCosmicWeather());
+
+  // Warm the quantum entropy pool so a draw never waits on the network
+  useEffect(() => {
+    primeEntropyPool();
+  }, []);
+
 
   const handleProceedToCard = useCallback(() => {
     setState("meditation");
@@ -65,7 +77,7 @@ const OracleScreen: React.FC = () => {
 
     setState("collapsing");
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const intent = selectedTheme || (customIntent ? null : null);
       const cardCount = getCardCount(spreadType);
 
@@ -73,17 +85,19 @@ const OracleScreen: React.FC = () => {
         // Draw N unique cards for the spread
         const drawn: TarotCard[] = [];
         for (let i = 0; i < cardCount; i++) {
-          const card = selectCardWithIntent(intent, drawn.map((c) => c.id));
+          const card = await selectCardWithIntent(intent, drawn.map((c) => c.id));
           drawn.push(card);
         }
+        setEntropySource(getLastEntropySource());
         setSpreadCards(drawn);
         setPrimaryCard(drawn[0]);
         setEchoCards(drawn.slice(1));
 
         saveReading(selectedTheme, customIntent || null, drawn[0], drawn.slice(1), spreadType);
       } else {
-        const primary = selectCardWithIntent(intent);
-        const echoes = selectEchoCards(primary, intent, 2);
+        const primary = await selectCardWithIntent(intent);
+        const echoes = await selectEchoCards(primary, intent, 2);
+        setEntropySource(getLastEntropySource());
         setPrimaryCard(primary);
         setEchoCards(echoes);
 
@@ -95,6 +109,7 @@ const OracleScreen: React.FC = () => {
       }, 800);
     }, 700);
   }, [state, selectedTheme, customIntent, spreadType, saveReading]);
+
 
   const handleNewReading = useCallback(() => {
     setState("intent");
@@ -398,20 +413,28 @@ const OracleScreen: React.FC = () => {
 
         {/* Revealed phase */}
         {state === "revealed" && primaryCard && (
-          spreadType !== "single" && spreadCards.length > 0 ? (
-            <SpreadReadingDisplay
-              cards={spreadCards}
-              spreadType={spreadType}
-              onNewReading={handleNewReading}
-            />
-          ) : (
-            <ReadingDisplay
-              primaryCard={primaryCard}
-              echoCards={echoCards}
-              onNewReading={handleNewReading}
-            />
-          )
+          <div className="w-full flex flex-col items-center">
+            {spreadType !== "single" && spreadCards.length > 0 ? (
+              <SpreadReadingDisplay
+                cards={spreadCards}
+                spreadType={spreadType}
+                onNewReading={handleNewReading}
+              />
+            ) : (
+              <ReadingDisplay
+                primaryCard={primaryCard}
+                echoCards={echoCards}
+                onNewReading={handleNewReading}
+              />
+            )}
+            <p className="mt-6 font-body text-[0.65rem] tracking-wider text-muted-foreground/60 italic text-center">
+              {entropySource === "quantum"
+                ? "⚛ Seeded by ANU quantum vacuum entropy"
+                : "◇ Seeded by local device entropy"}
+            </p>
+          </div>
         )}
+
       </main>
 
 
