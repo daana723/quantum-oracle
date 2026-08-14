@@ -33,6 +33,11 @@ import {
 } from "@/data/tarotCards";
 import { getCurrentCosmicWeather } from "@/data/cosmicWeather";
 import { type SpreadType, getCardCount } from "@/data/spreadMeanings";
+import {
+  primeEntropyPool,
+  getLastEntropySource,
+  type EntropySource,
+} from "@/lib/quantumEntropy";
 
 type OracleState = "intent" | "meditation" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
 
