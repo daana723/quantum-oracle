@@ -65,7 +65,7 @@ const OracleScreen: React.FC = () => {
 
     setState("collapsing");
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const intent = selectedTheme || (customIntent ? null : null);
       const cardCount = getCardCount(spreadType);
 
@@ -73,17 +73,19 @@ const OracleScreen: React.FC = () => {
         // Draw N unique cards for the spread
         const drawn: TarotCard[] = [];
         for (let i = 0; i < cardCount; i++) {
-          const card = selectCardWithIntent(intent, drawn.map((c) => c.id));
+          const card = await selectCardWithIntent(intent, drawn.map((c) => c.id));
           drawn.push(card);
         }
+        setEntropySource(getLastEntropySource());
         setSpreadCards(drawn);
         setPrimaryCard(drawn[0]);
         setEchoCards(drawn.slice(1));
 
         saveReading(selectedTheme, customIntent || null, drawn[0], drawn.slice(1), spreadType);
       } else {
-        const primary = selectCardWithIntent(intent);
-        const echoes = selectEchoCards(primary, intent, 2);
+        const primary = await selectCardWithIntent(intent);
+        const echoes = await selectEchoCards(primary, intent, 2);
+        setEntropySource(getLastEntropySource());
         setPrimaryCard(primary);
         setEchoCards(echoes);
 
@@ -95,6 +97,7 @@ const OracleScreen: React.FC = () => {
       }, 800);
     }, 700);
   }, [state, selectedTheme, customIntent, spreadType, saveReading]);
+
 
   const handleNewReading = useCallback(() => {
     setState("intent");
