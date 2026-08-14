@@ -1,62 +1,37 @@
-# Roadmap: Quantum Randomness, Full Deck, Real Ephemeris
+# Phase 1 (build now): Real quantum randomness via ANU QRNG
 
-Three pieces, built in this order. Desktop package build is parked for later (noted at the end).
+Only this phase gets built now. Minor Arcana content and the Electron desktop build come after, once quantum draws are confirmed working. No ANU API key for now — register one later if the free endpoint proves flaky.
 
----
+## What it does
 
-## Phase 1 — Real quantum randomness (ANU QRNG) — build now
+Today every draw uses `Math.random()` (`src/data/tarotCards.ts:291` and `:305`) — a pseudo-random generator. This phase swaps the entropy source only; the selection logic (intent weighting, echo cards, no repeats) is unchanged.
 
-Today every draw uses `Math.random()` (`src/data/tarotCards.ts:291` and `:305`), which is a pseudo-random generator. Phase 1 replaces the entropy source, not the selection logic.
+- A backend function fetches raw random bytes from the ANU quantum RNG and returns them. It runs server-side because ANU's endpoint blocks direct browser calls, and so an API key can be added later without touching frontend code.
+- The app keeps an in-memory pool of quantum bytes, refilled in the background when it runs low, so a draw never waits on the network.
+- Card selection consumes bytes from the pool instead of `Math.random()`.
 
-**How it works**
-- A backend function fetches raw random bytes from the ANU quantum RNG and returns them to the app. It runs server-side because ANU's endpoint does not allow direct browser calls, and because the newer ANU API requires a key that must not sit in frontend code.
-- The app keeps a small pool of quantum bytes in memory, topped up in the background, so a draw never waits on the network.
-- Selection stays exactly as it is (intent weighting, echo cards, no repeats) — it just consumes quantum bytes instead of `Math.random()`.
+## Offline / failure behaviour (silent local fallback)
 
-**Offline / failure behaviour (as chosen: silent local fallback)**
-- If the pool is empty and the fetch fails, the draw proceeds instantly using the browser's cryptographic randomness. No error, no blocked reading.
-- The entropy source is recorded on the reading (`quantum` or `local`) and shown as a small, quiet label — a subtle "⚛ ANU quantum entropy" line on the reading, nothing alarming when it falls back.
+- If the pool is empty and the fetch fails, the draw proceeds immediately using the browser's cryptographic randomness. No error, no blocked reading.
+- The entropy source is recorded on the reading (`quantum` or `local`) and shown as a quiet label — a small "⚛ ANU quantum entropy" line, with a neutral "local entropy" variant when it falls back.
+- The pool is in-memory only, so it resets on reload; that is intentional — no stale entropy persisted to disk.
 
-**Honest framing**
-- Copy will say the draw is seeded by quantum vacuum fluctuations measured at ANU — true — without implying the cards predict anything, in line with the app's reflective stance.
+## Framing
 
-**Setup note**
-- ANU's public no-key endpoint is unreliable and heavily rate-limited. If you want dependable quantum draws, a free ANU API key is worth registering; the plan supports both — with a key it uses the fast AWS endpoint, without one it tries the legacy public endpoint and falls back locally.
+Copy says the draw is seeded by quantum vacuum fluctuations measured at ANU — true — without implying the cards predict anything, in line with the app's reflective stance.
 
----
+## Later (not this build)
 
-## Phase 2 — Full 78-card Rider-Waite-Smith deck with ND-affirming interpretations
-
-The 22 Major Arcana already have full interpretations and artwork. The 56 Minor Arcana currently exist only as a gallery listing (`src/data/minorArcanaCards.ts`) with no reading text and are not drawable.
-
-- Write full interpretations for all 56 Minors: upright and reversed meaning, element, keywords, and a reflective prompt, matching the Majors' structure.
-- Add ND-affirming framing to every one of the 78 cards: language that treats neurodivergent traits as differences rather than deficits — no "you must focus harder", no shame framing around rest, routine, sensory needs, or executive function. Concrete, low-demand reflection prompts instead of vague advice.
-- Make the whole 78-card deck drawable: single draws, all existing spreads, and intent weighting extended to Minor suits (Cups/water, Wands/fire, Swords/air, Pentacles/earth).
-- Deck-scope toggle so you can still read Majors-only if you want.
-
-Confirm before this phase: "ND" reads as neurodivergent-affirming in this plan. Say the word if you meant something else and I will adjust the copy direction.
-
----
-
-## Phase 3 — Swiss Ephemeris precision, with local fallback (as chosen)
-
-- Online: a backend function serves true Swiss Ephemeris positions, so planetary longitudes, retrogrades, sun rise/set and birth-chart placements are exact.
-- Offline: the app falls back to `astronomy-engine`, a pure-JS library accurate to about an arcminute, so readings keep working with no network.
-- Replaces the current approximations: the simplified moon longitude in `src/data/moonEngine.ts`, the ~40°N sunrise/sunset guess and hardcoded 2025 retrograde windows in `src/data/planetaryHoursEngine.ts`, and the birth-chart rising sign.
-- Optional geolocation with manual coordinate entry for accurate planetary hours.
-- Disclaimer copy updated to say positions are real astronomical calculations, keeping the non-predictive framing.
-
-On your two links: `aloistr/swisseph` is the authoritative C source from Astrodienst and is the right basis. `richardplrj/swiss-ephemeris-api` is a Python/FastAPI wrapper over it — useful as a reference, but AGPL-3.0 and a third-party host, so the plan uses the official Swiss Ephemeris data path in our own backend function rather than depending on someone else's server. Note that Swiss Ephemeris itself is dual-licensed: free under AGPL, otherwise a paid commercial licence from Astrodienst. Since this app is a free public PWA, the AGPL route fits — worth knowing before we ship it.
-
----
-
-## Later — desktop package
-
-Noted for a future round: an Electron build producing downloadable Windows/macOS/Linux packages of the same app, reusing the offline-capable local engines from Phases 1 and 3. Not part of this work.
+- **Free ANU API key** — with a key the function uses ANU's faster AWS endpoint; without one it tries the legacy public endpoint (unreliable, rate-limited) and falls back locally. Drop-in when you have it.
+- **Full 78-card deck with ND-affirming interpretations** — you'll author the Minor Arcana content; the deck plumbing gets wired then.
+- **Electron desktop package** — downloadable Windows/macOS/Linux builds of the same app.
+- **Swiss Ephemeris precision with local fallback** — official Astrodienst data online, `astronomy-engine` offline. On your links: `aloistr/swisseph` is the authoritative source and the right basis; `richardplrj/swiss-ephemeris-api` is a third-party AGPL wrapper, useful as reference but not something to depend on as a host. Swiss Ephemeris is dual-licensed (AGPL or paid commercial) — the AGPL route fits a free public PWA.
 
 ## Technical notes
 
-- New backend functions: one for quantum entropy, one for ephemeris. No secrets required for the fallback paths; an ANU API key is optional and requested only if you want it.
-- Entropy access goes through a single module so every random draw in the app shares one source and one fallback rule.
-- Existing exports (`selectCardWithIntent`, `getMoonData`, `getPlanetaryHours`, `getRetrogradeStatuses`) keep their signatures; card selection becomes async where it fetches.
+- One new backend function for quantum entropy. No secrets needed; an ANU API key is optional and added later.
+- Entropy access goes through a single module so every draw in the app shares one source and one fallback rule.
+- Selection uses rejection sampling over the byte pool so the weighted intent distribution stays unbiased.
+- `selectCardWithIntent` / `selectEchoCards` become async (they may await a pool refill); calling components are updated accordingly.
 - Reading history gains an entropy-source field; older saved readings render unchanged.
+
