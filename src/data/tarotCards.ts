@@ -1,3 +1,5 @@
+import { randomInt } from "@/lib/quantumEntropy";
+
 export interface TarotCard {
   id: number;
   name: string;
