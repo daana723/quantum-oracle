@@ -49,10 +49,17 @@ const OracleScreen: React.FC = () => {
   const [primaryCard, setPrimaryCard] = useState<TarotCard | null>(null);
   const [echoCards, setEchoCards] = useState<TarotCard[]>([]);
   const [spreadCards, setSpreadCards] = useState<TarotCard[]>([]);
+  const [entropySource, setEntropySource] = useState<EntropySource>("local");
 
   const { readings, saveReading, deleteReading, clearAllReadings } = useReadingHistory();
 
   const [cosmicWeather] = useState(() => getCurrentCosmicWeather());
+
+  // Warm the quantum entropy pool so a draw never waits on the network
+  useEffect(() => {
+    primeEntropyPool();
+  }, []);
+
 
   const handleProceedToCard = useCallback(() => {
     setState("meditation");
