@@ -21,6 +21,9 @@ const MinorArcanaGallery = lazy(() => import("./pages/MinorArcanaGallery"));
 
 const queryClient = new QueryClient();
 
+// Desktop (Electron) builds load from file:// where history routing can't work
+const Router = import.meta.env.VITE_DESKTOP === "true" ? HashRouter : BrowserRouter;
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
