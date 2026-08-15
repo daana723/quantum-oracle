@@ -16,7 +16,9 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
     mode === "development" && componentTagger(),
-    VitePWA({
+    // Desktop (Electron) builds ship as local files — no service worker/manifest
+    process.env.VITE_DESKTOP !== "true" && VitePWA({
+
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "robots.txt"],
       workbox: {
