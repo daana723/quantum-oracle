@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -21,13 +21,16 @@ const MinorArcanaGallery = lazy(() => import("./pages/MinorArcanaGallery"));
 
 const queryClient = new QueryClient();
 
+// Desktop (Electron) builds load from file:// where history routing can't work
+const Router = import.meta.env.VITE_DESKTOP === "true" ? HashRouter : BrowserRouter;
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <Router>
           <Suspense fallback={<div className="min-h-screen bg-background" />}>
             <Routes>
               <Route path="/" element={<Index />} />
@@ -45,7 +48,7 @@ const App = () => (
             </Routes>
           </Suspense>
           <InstallBanner />
-        </BrowserRouter>
+        </Router>
       </TooltipProvider>
     </QueryClientProvider>
   </HelmetProvider>
