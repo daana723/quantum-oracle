@@ -105,23 +105,33 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
           ))}
         </div>
 
-        {/* Expanded echo interpretation */}
-        {expandedEcho !== null && (
-          <div 
-            className="mt-4 p-4 md:p-6 rounded-lg border border-gold/20 bg-card/50 max-w-md mx-auto animate-fade-in-up"
-          >
-            <h5 className="font-display text-base md:text-lg text-gold mb-2 md:mb-3">
-              {echoCards[expandedEcho].name}
-            </h5>
-            <p className="text-sm md:text-base font-body text-foreground/80 leading-relaxed">
-              {echoCards[expandedEcho].reversedMeaning}
-            </p>
-            <p className="mt-2 text-xs text-gold/40 italic">
-              — What might have been
-            </p>
-          </div>
-        )}
+        {/* Echo symbolism panels */}
+        <div className="mt-4 space-y-3 max-w-md mx-auto text-left">
+          {echoCards.map((echo, index) => (
+            <CardSymbolismPanel
+              key={echo.id}
+              card={echo}
+              intent={intent}
+              customIntent={customIntent}
+              collapsible
+              defaultOpen={expandedEcho === index}
+              shadowVariant
+              positionSublabel="What might have been"
+            />
+          ))}
+        </div>
       </div>
+
+      {/* Interpretive summary for the chosen question context */}
+      <ContextualSummaryPanel
+        cards={[primaryCard, ...echoCards]}
+        intent={intent}
+        customIntent={customIntent}
+        className="animate-fade-in-up"
+        style={{ animationDelay: "1.6s" }}
+      />
+
+
 
       {/* Action buttons */}
       <div className="flex flex-col sm:flex-row items-center gap-3 mt-4 md:mt-6 flex-wrap justify-center">
