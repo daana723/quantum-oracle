@@ -9,22 +9,28 @@ import {
   type SpreadType,
 } from "@/data/spreadMeanings";
 import CardFront from "./CardFront";
-import PlanetaryResonance from "./PlanetaryResonance";
 import CosmicWeatherPanel from "./CosmicWeatherPanel";
 import ShareableReading from "./ShareableReading";
+import CardSymbolismPanel from "./CardSymbolismPanel";
+import ContextualSummaryPanel from "./ContextualSummaryPanel";
 
 interface SpreadReadingDisplayProps {
   cards: TarotCard[];
   spreadType: SpreadType;
   onNewReading: () => void;
+  intent?: string | null;
+  customIntent?: string | null;
 }
 
 const SpreadReadingDisplay: React.FC<SpreadReadingDisplayProps> = ({
   cards,
   spreadType,
   onNewReading,
+  intent = null,
+  customIntent = null,
 }) => {
   const [expandedCard, setExpandedCard] = useState<number>(spreadType === "past-present-future" ? 1 : 0);
+
   const positions = spreadPositions[spreadType] || [];
   const synthesis = getSpreadSynthesis(cards);
   const relations = getSpreadRelations(spreadType);
