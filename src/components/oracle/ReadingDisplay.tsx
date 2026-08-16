@@ -7,19 +7,26 @@ import CosmicWeatherPanel from "./CosmicWeatherPanel";
 import QuantumAstrologyWidget from "./QuantumAstrologyWidget";
 import ShareableReading from "./ShareableReading";
 import KofiButton from "./KofiButton";
+import CardSymbolismPanel from "./CardSymbolismPanel";
+import ContextualSummaryPanel from "./ContextualSummaryPanel";
 
 interface ReadingDisplayProps {
   primaryCard: TarotCard;
   echoCards: TarotCard[];
   onNewReading: () => void;
+  intent?: string | null;
+  customIntent?: string | null;
 }
 
 const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
   primaryCard,
   echoCards,
   onNewReading,
+  intent = null,
+  customIntent = null,
 }) => {
   const [expandedEcho, setExpandedEcho] = React.useState<number | null>(null);
+
 
   const handleDownloadPdf = useCallback(async () => {
     const { generateReadingPdf } = await import("@/lib/generateReadingPdf");
