@@ -419,12 +419,16 @@ const OracleScreen: React.FC = () => {
                 cards={spreadCards}
                 spreadType={spreadType}
                 onNewReading={handleNewReading}
+                intent={selectedTheme}
+                customIntent={customIntent || null}
               />
             ) : (
               <ReadingDisplay
                 primaryCard={primaryCard}
                 echoCards={echoCards}
                 onNewReading={handleNewReading}
+                intent={selectedTheme}
+                customIntent={customIntent || null}
               />
             )}
             <p className="mt-6 font-body text-[0.65rem] tracking-wider text-muted-foreground/60 italic text-center">
