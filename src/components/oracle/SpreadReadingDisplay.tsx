@@ -206,7 +206,7 @@ const SpreadReadingDisplay: React.FC<SpreadReadingDisplayProps> = ({
         </h4>
         {cards.map((card, i) => (
           <CardSymbolismPanel
-            key={`${card.id}-${i}`}
+            key={`${card.id}-${i}-${expandedCard === i}`}
             card={card}
             positionLabel={positions[i]?.label}
             positionSublabel={positions[i]?.sublabel}
@@ -232,6 +232,17 @@ const SpreadReadingDisplay: React.FC<SpreadReadingDisplayProps> = ({
           {synthesis}
         </p>
       </div>
+
+      {/* Interpretive summary for the chosen question context */}
+      <ContextualSummaryPanel
+        cards={cards}
+        positions={positions.map((p) => p.label)}
+        intent={intent}
+        customIntent={customIntent}
+        className="animate-fade-in-up"
+        style={{ animationDelay: `${cards.length * 0.15 + 0.8}s` }}
+      />
+
 
       {/* Cosmic Weather */}
       <CosmicWeatherPanel className="mt-2" />
