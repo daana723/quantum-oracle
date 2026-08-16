@@ -190,35 +190,29 @@ const SpreadReadingDisplay: React.FC<SpreadReadingDisplayProps> = ({
         )}
       </div>
 
-      {/* Expanded card interpretation */}
-      {expandedCard !== null && positions[expandedCard] && (
-        <div
-          className="w-full max-w-md p-5 rounded-lg border border-gold/20 bg-card/40 backdrop-blur-sm animate-fade-in-up"
-          style={{ animationDelay: `${cards.length * 0.15 + 0.5}s` }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-gold/50">{positions[expandedCard].icon}</span>
-            <h4 className="font-display text-base text-gold">
-              {cards[expandedCard].name}
-            </h4>
-            <span className="font-display text-xs text-gold/40 tracking-wider ml-auto">
-              {positions[expandedCard].sublabel}
-            </span>
-          </div>
+      {/* Per-card symbolism, every position */}
+      <div
+        className="w-full max-w-md space-y-3 animate-fade-in-up"
+        style={{ animationDelay: `${cards.length * 0.15 + 0.5}s` }}
+      >
+        <h4 className="font-display text-sm text-gold/70 tracking-widest uppercase text-center">
+          Card by Card
+        </h4>
+        {cards.map((card, i) => (
+          <CardSymbolismPanel
+            key={`${card.id}-${i}`}
+            card={card}
+            positionLabel={positions[i]?.label}
+            positionSublabel={positions[i]?.sublabel}
+            positionIcon={positions[i]?.icon}
+            intent={intent}
+            customIntent={customIntent}
+            collapsible
+            defaultOpen={expandedCard === i}
+          />
+        ))}
+      </div>
 
-          <p className="font-body text-base text-foreground/90 leading-relaxed mb-3">
-            {cards[expandedCard].meaning}
-          </p>
-
-          <p className="font-body text-xs text-gold/50 italic">
-            {cards[expandedCard].symbolism}
-          </p>
-
-          <div className="mt-4">
-            <PlanetaryResonance card={cards[expandedCard]} />
-          </div>
-        </div>
-      )}
 
       {/* Elemental Synthesis */}
       <div
