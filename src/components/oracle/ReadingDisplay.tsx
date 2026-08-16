@@ -47,11 +47,18 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
           <p className="text-base md:text-lg font-body leading-relaxed text-foreground/90">
             {primaryCard.meaning}
           </p>
-          <p className="text-xs md:text-sm font-body italic text-gold/60">
-            {primaryCard.symbolism}
-          </p>
         </div>
       </div>
+
+      {/* Primary card symbolism */}
+      <CardSymbolismPanel
+        card={primaryCard}
+        intent={intent}
+        customIntent={customIntent}
+        className="max-w-md animate-fade-in-up"
+        style={{ animationDelay: "0.5s" }}
+      />
+
 
       {/* Cosmic Weather Panel */}
       <CosmicWeatherPanel className="mt-2" />
