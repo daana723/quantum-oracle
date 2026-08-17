@@ -38,11 +38,15 @@ import {
   getLastEntropySource,
   type EntropySource,
 } from "@/lib/quantumEntropy";
+import QuantumEntropyBadge from "@/components/oracle/QuantumEntropyBadge";
+import DecisionPanel from "@/components/oracle/DecisionPanel";
 
 type OracleState = "intent" | "meditation" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
+type OracleMode = "reflection" | "decision";
 
 const OracleScreen: React.FC = () => {
   const [state, setState] = useState<OracleState>("intent");
+  const [mode, setMode] = useState<OracleMode>("reflection");
   const [selectedTheme, setSelectedTheme] = useState<ThemeType | null>(null);
   const [customIntent, setCustomIntent] = useState("");
   const [spreadType, setSpreadType] = useState<SpreadType>("single");
@@ -50,6 +54,7 @@ const OracleScreen: React.FC = () => {
   const [echoCards, setEchoCards] = useState<TarotCard[]>([]);
   const [spreadCards, setSpreadCards] = useState<TarotCard[]>([]);
   const [entropySource, setEntropySource] = useState<EntropySource>("local");
+  const [poolSource, setPoolSource] = useState<EntropySource>("local");
 
   const { readings, saveReading, deleteReading, clearAllReadings } = useReadingHistory();
 
@@ -58,6 +63,17 @@ const OracleScreen: React.FC = () => {
   // Warm the quantum entropy pool so a draw never waits on the network
   useEffect(() => {
     primeEntropyPool();
+    let ticks = 0;
+    const id = window.setInterval(async () => {
+      const { isQuantumPoolReady } = await import("@/lib/quantumEntropy");
+      if (isQuantumPoolReady()) {
+        setPoolSource("quantum");
+        window.clearInterval(id);
+      } else if (++ticks > 10) {
+        window.clearInterval(id);
+      }
+    }, 700);
+    return () => window.clearInterval(id);
   }, []);
 
 
@@ -282,7 +298,16 @@ const OracleScreen: React.FC = () => {
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4 font-body text-foreground/80">
-              <p>This is not fortune-telling. It is a mirror for reflection.</p>
+              <p>
+                This is not fortune-telling. It is a reflection tool built for
+                brains that stall — decision paralysis, looping thoughts, too many
+                open tabs at once.
+              </p>
+              <p>
+                Every draw is seeded by real quantum randomness measured at the
+                Australian National University, so the shuffle is genuinely
+                unbiased. What you do with it is entirely yours.
+              </p>
               <p>
                 Like quantum particles existing in superposition until observed,
                 possibilities coexist until consciousness collapses them into experience.
@@ -305,38 +330,66 @@ const OracleScreen: React.FC = () => {
       <main className="flex-1 flex flex-col items-center justify-center px-4 pb-8 relative z-10">
         {/* Intent selection phase */}
         {state === "intent" && (
-          <div className="flex flex-col items-center gap-8 md:gap-12 animate-fade-in-up">
-            <div className="text-center space-y-2">
-              <h2 className="font-display text-xl md:text-2xl text-gold/90">
-                Set Your Intention
-              </h2>
-              <p className="font-body text-sm md:text-base text-muted-foreground italic">
-                What draws your attention inward?
-              </p>
+          <div className="flex flex-col items-center gap-6 md:gap-10 animate-fade-in-up">
+            <QuantumEntropyBadge source={poolSource} state="idle" />
+
+            {/* Mode toggle */}
+            <div className="inline-flex rounded-full border border-gold/30 p-1">
+              {([
+                { id: "reflection" as const, label: "Reflect" },
+                { id: "decision" as const, label: "Decide (yes / no)" },
+              ]).map((m) => (
+                <button
+                  key={m.id}
+                  onClick={() => setMode(m.id)}
+                  className={`px-4 py-1.5 rounded-full font-display text-sm tracking-wide transition-colors ${
+                    mode === m.id
+                      ? "bg-gold/15 text-gold"
+                      : "text-gold/50 hover:text-gold/80"
+                  }`}
+                >
+                  {m.label}
+                </button>
+              ))}
             </div>
 
-            <IntentSelector
-              selectedTheme={selectedTheme}
-              customIntent={customIntent}
-              onThemeSelect={setSelectedTheme}
-              onCustomIntentChange={setCustomIntent}
-            />
+            {mode === "decision" ? (
+              <DecisionPanel />
+            ) : (
+              <>
+                <div className="text-center space-y-2">
+                  <h2 className="font-display text-xl md:text-2xl text-gold/90">
+                    Set Your Intention
+                  </h2>
+                  <p className="font-body text-sm md:text-base text-muted-foreground italic">
+                    What draws your attention inward?
+                  </p>
+                </div>
 
-            {/* Spread selector */}
-            <SpreadSelector selected={spreadType} onSelect={setSpreadType} />
+                <IntentSelector
+                  selectedTheme={selectedTheme}
+                  customIntent={customIntent}
+                  onThemeSelect={setSelectedTheme}
+                  onCustomIntentChange={setCustomIntent}
+                />
 
-            <button
-              onClick={handleProceedToCard}
-              className="
-                mt-4 px-8 py-3 rounded-full
-                font-display text-base tracking-wider
-                border border-gold/50 text-gold
-                bg-transparent hover:bg-gold/10 hover:border-gold
-                transition-all duration-300
-              "
-            >
-              Approach the Veil
-            </button>
+                {/* Spread selector */}
+                <SpreadSelector selected={spreadType} onSelect={setSpreadType} />
+
+                <button
+                  onClick={handleProceedToCard}
+                  className="
+                    mt-4 px-8 py-3 rounded-full
+                    font-display text-base tracking-wider
+                    border border-gold/50 text-gold
+                    bg-transparent hover:bg-gold/10 hover:border-gold
+                    transition-all duration-300
+                  "
+                >
+                  Approach the Veil
+                </button>
+              </>
+            )}
           </div>
         )}
 
@@ -371,6 +424,7 @@ const OracleScreen: React.FC = () => {
         {/* Hidden card phase */}
         {(state === "hidden" || state === "collapsing") && (
           <div className="flex flex-col items-center gap-6 md:gap-8 animate-fade-in-up">
+            <QuantumEntropyBadge source={poolSource} state="idle" />
             {(selectedTheme || customIntent) && (
               <p className="font-body text-sm text-gold/60 italic">
                 {customIntent || selectedTheme}
@@ -431,11 +485,9 @@ const OracleScreen: React.FC = () => {
                 customIntent={customIntent || null}
               />
             )}
-            <p className="mt-6 font-body text-[0.65rem] tracking-wider text-muted-foreground/60 italic text-center">
-              {entropySource === "quantum"
-                ? "⚛ Seeded by ANU quantum vacuum entropy"
-                : "◇ Seeded by local device entropy"}
-            </p>
+            <div className="mt-6 flex justify-center">
+              <QuantumEntropyBadge source={entropySource} state="live" />
+            </div>
           </div>
         )}
 
