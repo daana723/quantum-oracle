@@ -38,11 +38,15 @@ import {
   getLastEntropySource,
   type EntropySource,
 } from "@/lib/quantumEntropy";
+import QuantumEntropyBadge from "@/components/oracle/QuantumEntropyBadge";
+import DecisionPanel from "@/components/oracle/DecisionPanel";
 
 type OracleState = "intent" | "meditation" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
+type OracleMode = "reflection" | "decision";
 
 const OracleScreen: React.FC = () => {
   const [state, setState] = useState<OracleState>("intent");
+  const [mode, setMode] = useState<OracleMode>("reflection");
   const [selectedTheme, setSelectedTheme] = useState<ThemeType | null>(null);
   const [customIntent, setCustomIntent] = useState("");
   const [spreadType, setSpreadType] = useState<SpreadType>("single");
@@ -50,6 +54,7 @@ const OracleScreen: React.FC = () => {
   const [echoCards, setEchoCards] = useState<TarotCard[]>([]);
   const [spreadCards, setSpreadCards] = useState<TarotCard[]>([]);
   const [entropySource, setEntropySource] = useState<EntropySource>("local");
+  const [poolSource, setPoolSource] = useState<EntropySource>("local");
 
   const { readings, saveReading, deleteReading, clearAllReadings } = useReadingHistory();
 
