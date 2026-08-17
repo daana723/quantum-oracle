@@ -424,6 +424,7 @@ const OracleScreen: React.FC = () => {
         {/* Hidden card phase */}
         {(state === "hidden" || state === "collapsing") && (
           <div className="flex flex-col items-center gap-6 md:gap-8 animate-fade-in-up">
+            <QuantumEntropyBadge source={poolSource} state="idle" />
             {(selectedTheme || customIntent) && (
               <p className="font-body text-sm text-gold/60 italic">
                 {customIntent || selectedTheme}
