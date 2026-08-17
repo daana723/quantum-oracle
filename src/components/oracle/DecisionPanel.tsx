@@ -27,7 +27,7 @@ const DecisionPanel: React.FC = () => {
   if (result) {
     return (
       <div className="w-full max-w-md flex flex-col items-center gap-5 animate-fade-in-up">
-        <CardFront card={result.card} isRevealed={true} size="small" />
+        <CardFront card={result.card} isRevealed={true} size="full" />
         <div className="text-center space-y-3">
           <h3 className="font-display text-2xl text-gold-gradient tracking-wide">
             {result.headline}
