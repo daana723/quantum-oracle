@@ -63,6 +63,17 @@ const OracleScreen: React.FC = () => {
   // Warm the quantum entropy pool so a draw never waits on the network
   useEffect(() => {
     primeEntropyPool();
+    let ticks = 0;
+    const id = window.setInterval(async () => {
+      const { isQuantumPoolReady } = await import("@/lib/quantumEntropy");
+      if (isQuantumPoolReady()) {
+        setPoolSource("quantum");
+        window.clearInterval(id);
+      } else if (++ticks > 10) {
+        window.clearInterval(id);
+      }
+    }, 700);
+    return () => window.clearInterval(id);
   }, []);
 
 
