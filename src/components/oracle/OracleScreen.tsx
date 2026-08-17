@@ -484,11 +484,9 @@ const OracleScreen: React.FC = () => {
                 customIntent={customIntent || null}
               />
             )}
-            <p className="mt-6 font-body text-[0.65rem] tracking-wider text-muted-foreground/60 italic text-center">
-              {entropySource === "quantum"
-                ? "⚛ Seeded by ANU quantum vacuum entropy"
-                : "◇ Seeded by local device entropy"}
-            </p>
+            <div className="mt-6 flex justify-center">
+              <QuantumEntropyBadge source={entropySource} state="live" />
+            </div>
           </div>
         )}
 
