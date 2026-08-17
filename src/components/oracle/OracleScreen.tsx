@@ -298,7 +298,16 @@ const OracleScreen: React.FC = () => {
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4 font-body text-foreground/80">
-              <p>This is not fortune-telling. It is a mirror for reflection.</p>
+              <p>
+                This is not fortune-telling. It is a reflection tool built for
+                brains that stall — decision paralysis, looping thoughts, too many
+                open tabs at once.
+              </p>
+              <p>
+                Every draw is seeded by real quantum randomness measured at the
+                Australian National University, so the shuffle is genuinely
+                unbiased. What you do with it is entirely yours.
+              </p>
               <p>
                 Like quantum particles existing in superposition until observed,
                 possibilities coexist until consciousness collapses them into experience.
@@ -321,38 +330,66 @@ const OracleScreen: React.FC = () => {
       <main className="flex-1 flex flex-col items-center justify-center px-4 pb-8 relative z-10">
         {/* Intent selection phase */}
         {state === "intent" && (
-          <div className="flex flex-col items-center gap-8 md:gap-12 animate-fade-in-up">
-            <div className="text-center space-y-2">
-              <h2 className="font-display text-xl md:text-2xl text-gold/90">
-                Set Your Intention
-              </h2>
-              <p className="font-body text-sm md:text-base text-muted-foreground italic">
-                What draws your attention inward?
-              </p>
+          <div className="flex flex-col items-center gap-6 md:gap-10 animate-fade-in-up">
+            <QuantumEntropyBadge source={poolSource} state="idle" />
+
+            {/* Mode toggle */}
+            <div className="inline-flex rounded-full border border-gold/30 p-1">
+              {([
+                { id: "reflection" as const, label: "Reflect" },
+                { id: "decision" as const, label: "Decide (yes / no)" },
+              ]).map((m) => (
+                <button
+                  key={m.id}
+                  onClick={() => setMode(m.id)}
+                  className={`px-4 py-1.5 rounded-full font-display text-sm tracking-wide transition-colors ${
+                    mode === m.id
+                      ? "bg-gold/15 text-gold"
+                      : "text-gold/50 hover:text-gold/80"
+                  }`}
+                >
+                  {m.label}
+                </button>
+              ))}
             </div>
 
-            <IntentSelector
-              selectedTheme={selectedTheme}
-              customIntent={customIntent}
-              onThemeSelect={setSelectedTheme}
-              onCustomIntentChange={setCustomIntent}
-            />
+            {mode === "decision" ? (
+              <DecisionPanel />
+            ) : (
+              <>
+                <div className="text-center space-y-2">
+                  <h2 className="font-display text-xl md:text-2xl text-gold/90">
+                    Set Your Intention
+                  </h2>
+                  <p className="font-body text-sm md:text-base text-muted-foreground italic">
+                    What draws your attention inward?
+                  </p>
+                </div>
 
-            {/* Spread selector */}
-            <SpreadSelector selected={spreadType} onSelect={setSpreadType} />
+                <IntentSelector
+                  selectedTheme={selectedTheme}
+                  customIntent={customIntent}
+                  onThemeSelect={setSelectedTheme}
+                  onCustomIntentChange={setCustomIntent}
+                />
 
-            <button
-              onClick={handleProceedToCard}
-              className="
-                mt-4 px-8 py-3 rounded-full
-                font-display text-base tracking-wider
-                border border-gold/50 text-gold
-                bg-transparent hover:bg-gold/10 hover:border-gold
-                transition-all duration-300
-              "
-            >
-              Approach the Veil
-            </button>
+                {/* Spread selector */}
+                <SpreadSelector selected={spreadType} onSelect={setSpreadType} />
+
+                <button
+                  onClick={handleProceedToCard}
+                  className="
+                    mt-4 px-8 py-3 rounded-full
+                    font-display text-base tracking-wider
+                    border border-gold/50 text-gold
+                    bg-transparent hover:bg-gold/10 hover:border-gold
+                    transition-all duration-300
+                  "
+                >
+                  Approach the Veil
+                </button>
+              </>
+            )}
           </div>
         )}
 
