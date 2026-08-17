@@ -102,3 +102,8 @@ export async function randomFloat(): Promise<number> {
   const n = await randomInt(0x1000000); // 24 bits of precision
   return n / 0x1000000;
 }
+
+/** True once quantum bytes are buffered and ready for the next draw. */
+export function isQuantumPoolReady(): boolean {
+  return pool.length > 0;
+}
