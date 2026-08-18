@@ -40,9 +40,10 @@ import {
 } from "@/lib/quantumEntropy";
 import QuantumEntropyBadge from "@/components/oracle/QuantumEntropyBadge";
 import DecisionPanel from "@/components/oracle/DecisionPanel";
+import UnstickFlow from "@/components/oracle/UnstickFlow";
 
 type OracleState = "intent" | "meditation" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
-type OracleMode = "reflection" | "decision";
+type OracleMode = "reflection" | "decision" | "unstick";
 
 const OracleScreen: React.FC = () => {
   const [state, setState] = useState<OracleState>("intent");
