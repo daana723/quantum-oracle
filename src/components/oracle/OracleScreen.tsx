@@ -40,9 +40,10 @@ import {
 } from "@/lib/quantumEntropy";
 import QuantumEntropyBadge from "@/components/oracle/QuantumEntropyBadge";
 import DecisionPanel from "@/components/oracle/DecisionPanel";
+import UnstickFlow from "@/components/oracle/UnstickFlow";
 
 type OracleState = "intent" | "meditation" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
-type OracleMode = "reflection" | "decision";
+type OracleMode = "reflection" | "decision" | "unstick";
 
 const OracleScreen: React.FC = () => {
   const [state, setState] = useState<OracleState>("intent");
@@ -334,10 +335,11 @@ const OracleScreen: React.FC = () => {
             <QuantumEntropyBadge source={poolSource} state="idle" />
 
             {/* Mode toggle */}
-            <div className="inline-flex rounded-full border border-gold/30 p-1">
+            <div className="inline-flex flex-wrap justify-center rounded-full border border-gold/30 p-1">
               {([
                 { id: "reflection" as const, label: "Reflect" },
                 { id: "decision" as const, label: "Decide (yes / no)" },
+                { id: "unstick" as const, label: "Unstick (step by step)" },
               ]).map((m) => (
                 <button
                   key={m.id}
@@ -355,6 +357,8 @@ const OracleScreen: React.FC = () => {
 
             {mode === "decision" ? (
               <DecisionPanel />
+            ) : mode === "unstick" ? (
+              <UnstickFlow />
             ) : (
               <>
                 <div className="text-center space-y-2">
