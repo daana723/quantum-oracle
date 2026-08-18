@@ -334,10 +334,11 @@ const OracleScreen: React.FC = () => {
             <QuantumEntropyBadge source={poolSource} state="idle" />
 
             {/* Mode toggle */}
-            <div className="inline-flex rounded-full border border-gold/30 p-1">
+            <div className="inline-flex flex-wrap justify-center rounded-full border border-gold/30 p-1">
               {([
                 { id: "reflection" as const, label: "Reflect" },
                 { id: "decision" as const, label: "Decide (yes / no)" },
+                { id: "unstick" as const, label: "Unstick (step by step)" },
               ]).map((m) => (
                 <button
                   key={m.id}
@@ -355,6 +356,8 @@ const OracleScreen: React.FC = () => {
 
             {mode === "decision" ? (
               <DecisionPanel />
+            ) : mode === "unstick" ? (
+              <UnstickFlow />
             ) : (
               <>
                 <div className="text-center space-y-2">
