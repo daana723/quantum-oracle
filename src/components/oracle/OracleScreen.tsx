@@ -340,6 +340,13 @@ const OracleScreen: React.FC = () => {
           <div className="flex flex-col items-center gap-6 md:gap-10 animate-fade-in-up">
             <QuantumEntropyBadge source={poolSource} state="idle" />
 
+            <TrialBanner
+              unlocked={unlocked}
+              daysLeft={daysLeft}
+              readingsLeft={readingsLeft}
+              onUnlock={unlockWithCode}
+            />
+
             {/* Mode toggle */}
             <div className="inline-flex flex-wrap justify-center rounded-full border border-gold/30 p-1">
               {([
