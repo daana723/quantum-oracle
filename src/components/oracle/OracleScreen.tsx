@@ -41,6 +41,8 @@ import {
 import QuantumEntropyBadge from "@/components/oracle/QuantumEntropyBadge";
 import DecisionPanel from "@/components/oracle/DecisionPanel";
 import UnstickFlow from "@/components/oracle/UnstickFlow";
+import TrialBanner from "@/components/oracle/TrialBanner";
+import { useTrial } from "@/hooks/useTrial";
 
 type OracleState = "intent" | "meditation" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
 type OracleMode = "reflection" | "decision" | "unstick";
