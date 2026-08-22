@@ -82,8 +82,9 @@ const OracleScreen: React.FC = () => {
 
 
   const handleProceedToCard = useCallback(() => {
+    if (!hasAccess) return;
     setState("meditation");
-  }, []);
+  }, [hasAccess]);
 
   const handleMeditationComplete = useCallback(() => {
     setState("cosmic-moment");
