@@ -41,6 +41,8 @@ import {
 import QuantumEntropyBadge from "@/components/oracle/QuantumEntropyBadge";
 import DecisionPanel from "@/components/oracle/DecisionPanel";
 import UnstickFlow from "@/components/oracle/UnstickFlow";
+import TrialBanner from "@/components/oracle/TrialBanner";
+import { useTrial } from "@/hooks/useTrial";
 
 type OracleState = "intent" | "meditation" | "cosmic-moment" | "hidden" | "collapsing" | "revealed";
 type OracleMode = "reflection" | "decision" | "unstick";
@@ -58,6 +60,7 @@ const OracleScreen: React.FC = () => {
   const [poolSource, setPoolSource] = useState<EntropySource>("local");
 
   const { readings, saveReading, deleteReading, clearAllReadings } = useReadingHistory();
+  const { unlocked, hasAccess, daysLeft, readingsLeft, consumeReading, unlockWithCode } = useTrial();
 
   const [cosmicWeather] = useState(() => getCurrentCosmicWeather());
 
@@ -79,8 +82,9 @@ const OracleScreen: React.FC = () => {
 
 
   const handleProceedToCard = useCallback(() => {
+    if (!hasAccess) return;
     setState("meditation");
-  }, []);
+  }, [hasAccess]);
 
   const handleMeditationComplete = useCallback(() => {
     setState("cosmic-moment");
@@ -121,11 +125,13 @@ const OracleScreen: React.FC = () => {
         saveReading(selectedTheme, customIntent || null, primary, echoes, "single");
       }
 
+      consumeReading();
+
       setTimeout(() => {
         setState("revealed");
       }, 800);
     }, 700);
-  }, [state, selectedTheme, customIntent, spreadType, saveReading]);
+  }, [state, selectedTheme, customIntent, spreadType, saveReading, consumeReading]);
 
 
   const handleNewReading = useCallback(() => {
@@ -334,6 +340,13 @@ const OracleScreen: React.FC = () => {
           <div className="flex flex-col items-center gap-6 md:gap-10 animate-fade-in-up">
             <QuantumEntropyBadge source={poolSource} state="idle" />
 
+            <TrialBanner
+              unlocked={unlocked}
+              daysLeft={daysLeft}
+              readingsLeft={readingsLeft}
+              onUnlock={unlockWithCode}
+            />
+
             {/* Mode toggle */}
             <div className="inline-flex flex-wrap justify-center rounded-full border border-gold/30 p-1">
               {([
@@ -382,16 +395,24 @@ const OracleScreen: React.FC = () => {
 
                 <button
                   onClick={handleProceedToCard}
+                  disabled={!hasAccess}
                   className="
                     mt-4 px-8 py-3 rounded-full
                     font-display text-base tracking-wider
                     border border-gold/50 text-gold
                     bg-transparent hover:bg-gold/10 hover:border-gold
                     transition-all duration-300
+                    disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent
                   "
                 >
-                  Approach the Veil
+                  {hasAccess ? "Approach the Veil" : "Trial complete — unlock to draw"}
                 </button>
+                {!hasAccess && (
+                  <p className="font-body text-xs text-muted-foreground italic max-w-xs text-center">
+                    Decide (yes / no) and Unstick stay free, always. Card readings
+                    reopen once you unlock.
+                  </p>
+                )}
               </>
             )}
           </div>
