@@ -60,6 +60,7 @@ const OracleScreen: React.FC = () => {
   const [poolSource, setPoolSource] = useState<EntropySource>("local");
 
   const { readings, saveReading, deleteReading, clearAllReadings } = useReadingHistory();
+  const { unlocked, hasAccess, daysLeft, readingsLeft, consumeReading, unlockWithCode } = useTrial();
 
   const [cosmicWeather] = useState(() => getCurrentCosmicWeather());
 
