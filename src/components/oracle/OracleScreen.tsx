@@ -125,11 +125,13 @@ const OracleScreen: React.FC = () => {
         saveReading(selectedTheme, customIntent || null, primary, echoes, "single");
       }
 
+      consumeReading();
+
       setTimeout(() => {
         setState("revealed");
       }, 800);
     }, 700);
-  }, [state, selectedTheme, customIntent, spreadType, saveReading]);
+  }, [state, selectedTheme, customIntent, spreadType, saveReading, consumeReading]);
 
 
   const handleNewReading = useCallback(() => {
