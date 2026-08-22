@@ -395,16 +395,24 @@ const OracleScreen: React.FC = () => {
 
                 <button
                   onClick={handleProceedToCard}
+                  disabled={!hasAccess}
                   className="
                     mt-4 px-8 py-3 rounded-full
                     font-display text-base tracking-wider
                     border border-gold/50 text-gold
                     bg-transparent hover:bg-gold/10 hover:border-gold
                     transition-all duration-300
+                    disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent
                   "
                 >
-                  Approach the Veil
+                  {hasAccess ? "Approach the Veil" : "Trial complete — unlock to draw"}
                 </button>
+                {!hasAccess && (
+                  <p className="font-body text-xs text-muted-foreground italic max-w-xs text-center">
+                    Decide (yes / no) and Unstick stay free, always. Card readings
+                    reopen once you unlock.
+                  </p>
+                )}
               </>
             )}
           </div>
