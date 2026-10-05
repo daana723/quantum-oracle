@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import InstallBanner from "@/components/oracle/InstallBanner";
+import UpdateNotice from "@/components/oracle/UpdateNotice";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -48,6 +49,7 @@ const App = () => (
             </Routes>
           </Suspense>
           <InstallBanner />
+          <UpdateNotice />
         </Router>
       </TooltipProvider>
     </QueryClientProvider>
