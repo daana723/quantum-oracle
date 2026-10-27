@@ -13,7 +13,13 @@ export default function BirthLocationInput({ value, onChange }: {
   const [towns, setTowns] = useState<TownRow[]>([]);
   const [failed, setFailed] = useState(false);
   useEffect(() => {
-    import('@/data/birthTowns.json').then(module => setTowns(module.default as TownRow[])).catch(() => setFailed(true));
+    Promise.all([
+      import('@/data/birthTowns1.json'),
+      import('@/data/birthTowns2.json'),
+    ]).then(([first, second]) => {
+      const rows = [...first.default, ...second.default] as TownRow[];
+      setTowns(rows.sort((a, b) => b[7] - a[7]));
+    }).catch(() => setFailed(true));
   }, []);
   const term = normalize(query.trim());
   const matches = !value && term.length >= 2
