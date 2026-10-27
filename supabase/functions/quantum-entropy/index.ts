@@ -8,7 +8,7 @@ const MAX_LENGTH = 1024;
 
 async function fetchFromAnuKeyed(length: number, apiKey: string): Promise<number[] | null> {
   const url = `https://api.quantumnumbers.anu.edu.au?length=${length}&type=uint8`;
-  const res = await fetch(url, { headers: { 'x-api-key': apiKey } });
+  const res = await fetch(url, { headers: { 'x-api-key': apiKey }, signal: AbortSignal.timeout(4000) });
   if (!res.ok) return null;
   const json = await res.json();
   if (!json?.success || !Array.isArray(json.data)) return null;
@@ -17,7 +17,7 @@ async function fetchFromAnuKeyed(length: number, apiKey: string): Promise<number
 
 async function fetchFromAnuPublic(length: number): Promise<number[] | null> {
   const url = `https://qrng.anu.edu.au/API/jsonI.php?length=${length}&type=uint8`;
-  const res = await fetch(url);
+  const res = await fetch(url, { signal: AbortSignal.timeout(4000) });
   if (!res.ok) return null;
   const json = await res.json();
   if (!json?.success || !Array.isArray(json.data)) return null;
@@ -49,13 +49,13 @@ Deno.serve(async (req) => {
     }
 
     if (!data) {
-      data = await fetchFromAnuPublic(length);
+      try { data = await fetchFromAnuPublic(length); } catch (_e) { data = null; }
     }
 
     if (!data) {
       return new Response(
         JSON.stringify({ source: 'unavailable', data: [] }),
-        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
 
@@ -74,7 +74,7 @@ Deno.serve(async (req) => {
     console.error('quantum-entropy error:', error);
     return new Response(
       JSON.stringify({ source: 'unavailable', data: [] }),
-      { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   }
 });
