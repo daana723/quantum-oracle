@@ -84,7 +84,7 @@ const CardSymbolismPanel: React.FC<CardSymbolismPanelProps> = ({
 
       {isOpen && (
         <div className="mt-3 space-y-3">
-          <p className="font-body text-sm md:text-base text-foreground/90 leading-relaxed">
+          <p className="reading-prose     ">
             {shadowVariant ? card.reversedMeaning : card.meaning}
           </p>
 
@@ -92,7 +92,7 @@ const CardSymbolismPanel: React.FC<CardSymbolismPanelProps> = ({
             <h5 className="font-display text-[11px] tracking-widest uppercase text-gold/60 mb-1">
               Symbolism &amp; Signs
             </h5>
-            <p className="font-body text-sm text-foreground/75 italic leading-relaxed">
+            <p className="reading-prose    italic ">
               {symbolism}
             </p>
           </div>
@@ -110,7 +110,7 @@ const CardSymbolismPanel: React.FC<CardSymbolismPanelProps> = ({
 
           {interpretation && (
             <div className="space-y-2 pt-1">
-              <p className="font-body text-sm text-foreground/80 leading-relaxed">
+              <p className="reading-prose    ">
                 <span className="font-display text-gold/70">
                   {shadowVariant ? interpretation.shadowTitle : interpretation.uprightTitle}:{" "}
                 </span>
@@ -122,7 +122,7 @@ const CardSymbolismPanel: React.FC<CardSymbolismPanelProps> = ({
           )}
 
           {intentLens && (
-            <p className="font-body text-sm text-gold/60 italic leading-relaxed border-l border-gold/20 pl-3">
+            <p className="reading-prose   text-gold/60 italic  border-l border-gold/20 pl-3">
               {intentLens}
             </p>
           )}

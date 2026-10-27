@@ -175,7 +175,7 @@ const SpreadReadingDisplay: React.FC<SpreadReadingDisplayProps> = ({
                 </span>
                 <div className="flex-1 h-px bg-gradient-to-r from-gold/30 to-gold/10" />
               </div>
-              <p className="font-body text-sm text-foreground/70 italic leading-relaxed">
+              <p className="reading-prose    italic ">
                 {getRelationalMeaning(cards[from], fromPos, cards[to], toPos)}
               </p>
             </div>
@@ -189,7 +189,7 @@ const SpreadReadingDisplay: React.FC<SpreadReadingDisplayProps> = ({
               <span className="font-display text-xs text-gold/40 shrink-0">The Full Arc</span>
               <div className="flex-1 h-px bg-gradient-to-r from-gold/30 via-gold/20 to-gold/30" />
             </div>
-            <p className="font-body text-sm text-foreground/70 italic leading-relaxed">
+            <p className="reading-prose    italic ">
               {getRelationalMeaning(cards[arc[0]], positions[arc[0]]?.label || "", cards[arc[1]], positions[arc[1]]?.label || "")}
             </p>
           </div>
@@ -228,7 +228,7 @@ const SpreadReadingDisplay: React.FC<SpreadReadingDisplayProps> = ({
         <h4 className="font-display text-sm text-gold/70 tracking-widest uppercase mb-2">
           Elemental Synthesis
         </h4>
-        <p className="font-body text-sm text-foreground/80 italic leading-relaxed">
+        <p className="reading-prose    italic ">
           {synthesis}
         </p>
       </div>
