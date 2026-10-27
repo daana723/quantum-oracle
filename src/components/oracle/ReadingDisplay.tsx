@@ -44,7 +44,7 @@ const ReadingDisplay: React.FC<ReadingDisplayProps> = ({
 
         {/* Primary interpretation */}
         <div className="text-center space-y-3 md:space-y-4 max-w-md animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-          <p className="text-base md:text-lg font-body leading-relaxed text-foreground/90">
+          <p className="reading-prose     ">
             {primaryCard.meaning}
           </p>
         </div>

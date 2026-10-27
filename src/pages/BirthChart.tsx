@@ -6,19 +6,35 @@ import { calculateBirthChart, saveBirthData, loadBirthData, clearBirthData, type
 import { majorArcana } from "@/data/tarotCards";
 import { elementInfo } from "@/data/cosmicWeather";
 import { cardImages } from "@/assets/cards";
+import { Button } from '@/components/ui/button';
+import BirthLocationInput from '@/components/oracle/BirthLocationInput';
+import type { BirthLocation } from '@/lib/birthLocation';
 
 const BirthChart: React.FC = () => {
   const stored = useMemo(() => loadBirthData(), []);
 
   const [birthDate, setBirthDate] = useState(stored?.birthDate?.slice(0, 10) || "");
   const [birthHour, setBirthHour] = useState(stored?.birthHour ?? 12);
-  const [chart, setChart] = useState<BirthChartData | null>(stored?.chart || null);
+  const [birthMinute, setBirthMinute] = useState(stored?.birthMinute ?? 0);
+  const [location, setLocation] = useState<BirthLocation | null>(stored?.location ?? null);
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const [timeZone, setTimeZone] = useState('');
+  const [error, setError] = useState('');
+  const [chart, setChart] = useState<BirthChartData | null>(stored?.chart.calculationMethod === 'location' ? stored.chart : null);
 
   const handleCalculate = () => {
-    if (!birthDate) return;
-    const result = calculateBirthChart(birthDate, birthHour);
-    setChart(result);
-    saveBirthData(birthDate, birthHour, result);
+    setError('');
+    if (!birthDate || !location) return;
+    try {
+      const result = calculateBirthChart(birthDate, birthHour, birthMinute, location);
+      saveBirthData(birthDate, birthHour, result, birthMinute, location);
+      setChart(result);
+    } catch (cause) {
+      setError(cause instanceof RangeError
+        ? 'This local birth time is invalid or falls in a clock-change hour. Check the date and time; use coordinates with an explicit UTC offset (for example +01:00) if the hour repeats.'
+        : cause instanceof Error ? cause.message : 'Please check your birth details.');
+    }
   };
 
   const handleClear = () => {
@@ -26,6 +42,12 @@ const BirthChart: React.FC = () => {
     setChart(null);
     setBirthDate("");
     setBirthHour(12);
+    setBirthMinute(0);
+    setLocation(null);
+    setLatitude('');
+    setLongitude('');
+    setTimeZone('');
+    setError('');
   };
 
   return (
@@ -72,33 +94,36 @@ const BirthChart: React.FC = () => {
         <main className="flex-1 flex flex-col items-center px-4 pb-12 relative z-10">
           {/* Input form */}
           {!chart && (
-            <div className="w-full max-w-sm mx-auto animate-fade-in-up">
+            <div className="w-full max-w-md mx-auto animate-fade-in-up">
               <div className="text-center mb-8">
                 <User className="w-8 h-8 text-gold/60 mx-auto mb-3" />
                 <h2 className="font-display text-xl text-gold/90 mb-2">Natal Calculation</h2>
-                <p className="font-body text-sm text-muted-foreground italic">
-                  Enter your birth data to reveal your cosmic signature
+                <p className="font-body text-lg text-muted-foreground italic">
+                  Your birth date, local time and birthplace
                 </p>
               </div>
 
-              <div className="space-y-5 bg-card/30 border border-border/40 rounded-xl p-6 backdrop-blur-sm">
+              <div className="space-y-5">
                 <div>
-                  <label className="block font-display text-xs text-gold/70 tracking-wider uppercase mb-2">
+                  <label htmlFor="birth-date" className="block font-display text-sm text-primary mb-2">
                     Birth Date
                   </label>
                   <input
+                    id="birth-date"
                     type="date"
                     value={birthDate}
                     onChange={(e) => setBirthDate(e.target.value)}
-                    className="w-full bg-input border border-border/60 rounded-lg px-4 py-2.5 font-body text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50"
+                    className="w-full bg-input border border-border rounded-md px-4 py-2.5 font-body text-lg text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50"
                   />
                 </div>
 
+                <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-display text-xs text-gold/70 tracking-wider uppercase mb-2">
-                    Birth Hour (0–23)
+                  <label htmlFor="birth-hour" className="block font-display text-sm text-primary mb-2">
+                    Hour (0–23)
                   </label>
                   <input
+                    id="birth-hour"
                     type="number"
                     min={0}
                     max={23}
@@ -108,20 +133,53 @@ const BirthChart: React.FC = () => {
                       if (!isNaN(val) && val >= 0 && val <= 23) setBirthHour(val);
                       else if (e.target.value === "") setBirthHour(0);
                     }}
-                    className="w-full bg-input border border-border/60 rounded-lg px-4 py-2.5 font-body text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50"
+                    className="w-full bg-input border border-border rounded-md px-4 py-2.5 font-body text-lg text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50"
                   />
-                  <p className="font-body text-xs text-muted-foreground mt-1 italic">
-                    Birth time refines your Rising sign calculation
-                  </p>
                 </div>
+                <div>
+                  <label htmlFor="birth-minute" className="block font-display text-sm text-primary mb-2">Minutes (0–59)</label>
+                  <input id="birth-minute" type="number" min={0} max={59} step={1} value={birthMinute}
+                    onChange={event => {
+                      const value = Number(event.target.value);
+                      if (Number.isInteger(value) && value >= 0 && value <= 59) setBirthMinute(value);
+                    }}
+                    className="w-full bg-input border border-border rounded-md px-4 py-2.5 font-body text-lg text-foreground focus:ring-1 focus:ring-primary" />
+                </div>
+                </div>
+                <BirthLocationInput value={location} onChange={setLocation} />
+                <details className="font-body text-lg">
+                  <summary className="cursor-pointer text-primary">Enter coordinates instead</summary>
+                  <div className="mt-3 space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <label className="text-base">Latitude
+                        <input aria-label="Latitude" type="number" min={-65.99} max={65.99} step="any" value={latitude} onChange={e => setLatitude(e.target.value)} className="w-full mt-1 bg-input border border-border rounded-md px-3 py-2" />
+                      </label>
+                      <label className="text-base">Longitude
+                        <input aria-label="Longitude" type="number" min={-180} max={180} step="any" value={longitude} onChange={e => setLongitude(e.target.value)} className="w-full mt-1 bg-input border border-border rounded-md px-3 py-2" />
+                      </label>
+                    </div>
+                    <label className="block text-base">Birth time zone or UTC offset
+                      <input aria-label="Birth time zone or UTC offset" value={timeZone} onChange={e => setTimeZone(e.target.value)} placeholder="Europe/London or +01:00" className="w-full mt-1 bg-input border border-border rounded-md px-3 py-2" />
+                    </label>
+                    <Button type="button" variant="outline" disabled={!latitude || !longitude || !timeZone} onClick={() => {
+                      const lat = Number(latitude), lon = Number(longitude);
+                      if (!Number.isFinite(lat) || Math.abs(lat) >= 66 || !Number.isFinite(lon) || Math.abs(lon) > 180) {
+                        setError('Use latitude between 66° south and north, and longitude between −180° and 180°.'); return;
+                      }
+                      setLocation({ name: 'Custom birthplace', latitude: lat, longitude: lon, timeZone: timeZone.trim() }); setError('');
+                    }}>Use these coordinates</Button>
+                  </div>
+                </details>
+                <p className="font-body text-base text-muted-foreground leading-relaxed">Use the local time recorded at birth. Town time zones include historical daylight saving. If your time is unknown, noon is only an estimate and Rising may be wrong.</p>
+                {error && <p role="alert" className="font-body text-lg text-primary">{error}</p>}
 
-                <button
+                <Button
                   onClick={handleCalculate}
-                  disabled={!birthDate}
-                  className="w-full px-6 py-3 rounded-full font-display text-sm tracking-wider border border-gold/50 text-gold bg-transparent hover:bg-gold/10 hover:border-gold transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
+                  disabled={!birthDate || !location}
+                  className="w-full font-display"
                 >
                   Calculate Chart
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -137,7 +195,7 @@ const BirthChart: React.FC = () => {
                 </h2>
               </div>
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
                 {[
                   { label: "Sun", data: chart.sunSign },
                   { label: "Moon", data: chart.moonSign },
@@ -147,25 +205,25 @@ const BirthChart: React.FC = () => {
                   return (
                     <div
                       key={label}
-                      className="bg-card/40 border border-border/40 rounded-xl p-4 text-center backdrop-blur-sm"
+                      className="bg-card/70 border border-border rounded-lg px-2 py-4 sm:p-4 text-center backdrop-blur-sm min-w-0"
                     >
                       <p className="font-display text-xs text-gold/60 tracking-wider uppercase mb-1">
                         {label}
                       </p>
                       <p className="text-3xl mb-1">{data.symbol}</p>
-                      <p className="font-display text-sm text-gold">{data.sign}</p>
+                      <p className="font-display text-sm sm:text-base text-gold break-words">{data.sign}</p>
                       <p className={`text-xs mt-1 ${elData.color}`}>
                         {elData.symbol} {data.element}
                       </p>
-                      <p className="font-body text-xs text-foreground/60 mt-1">{data.degree}°</p>
+                      <p className="font-body text-base text-muted-foreground mt-1">{data.degree}°</p>
                     </div>
                   );
                 })}
               </div>
 
               {/* Description */}
-              <div className="bg-card/30 border border-border/30 rounded-xl p-5 backdrop-blur-sm">
-                <p className="font-body text-sm text-foreground/85 leading-relaxed italic text-center">
+              <div className="py-3">
+                <p className="reading-prose italic text-center">
                   {chart.description}
                 </p>
               </div>
@@ -235,12 +293,12 @@ const BirthChart: React.FC = () => {
 
               {/* Actions */}
               <div className="flex flex-col items-center gap-3">
-                <button
+                <Button variant="ghost"
                   onClick={handleClear}
-                  className="font-display text-xs text-muted-foreground hover:text-foreground transition-colors tracking-wider"
+                  className="font-body text-lg text-muted-foreground whitespace-normal h-auto"
                 >
                   Recalculate with different data
-                </button>
+                </Button>
                 <Link
                   to="/"
                   className="font-display text-sm text-gold/70 hover:text-gold transition-colors tracking-wider"
@@ -250,6 +308,11 @@ const BirthChart: React.FC = () => {
               </div>
             </div>
           )}
+          <div className="w-full max-w-lg mt-8 space-y-3 text-center font-body text-base text-muted-foreground leading-relaxed">
+            {chart && <p>{location?.name} · {String(birthHour).padStart(2, '0')}:{String(birthMinute).padStart(2, '0')} local time<br />{chart.birthUTC?.replace('T', ' ').replace('.000Z', ' UTC')}</p>}
+            <p>Sun and Moon use simplified astronomical formulas, not Swiss Ephemeris. Rising uses your birthplace and local birth time. Degrees and signs close to a boundary remain approximate; this chart is for reflection, not prediction.</p>
+            <p className="text-sm">Town data: <a href="https://www.geonames.org/" target="_blank" rel="noreferrer" className="underline text-primary">GeoNames</a> · CC BY 4.0. Towns and cities over 15,000 residents; smaller places can use coordinates.</p>
+          </div>
         </main>
       </div>
     </>

@@ -33,7 +33,7 @@ const ContextualSummaryPanel: React.FC<ContextualSummaryPanelProps> = ({
 
       <div className="space-y-3">
         {summary.paragraphs.map((p, i) => (
-          <p key={i} className="font-body text-sm text-foreground/85 leading-relaxed">
+          <p key={i} className="reading-prose    ">
             {p}
           </p>
         ))}
@@ -42,7 +42,7 @@ const ContextualSummaryPanel: React.FC<ContextualSummaryPanelProps> = ({
       {summary.prompt && (
         <>
           <div className="w-full h-px bg-gradient-to-r from-transparent via-gold/25 to-transparent my-4" />
-          <p className="font-body text-sm text-foreground/80 italic flex gap-2">
+          <p className="reading-prose    italic flex gap-2">
             <span className="text-gold/40 shrink-0">✦</span>
             {summary.prompt}
           </p>
@@ -50,7 +50,7 @@ const ContextualSummaryPanel: React.FC<ContextualSummaryPanelProps> = ({
       )}
 
       {summary.affirmation && (
-        <p className="mt-3 text-center font-body text-xs text-gold/60 italic">
+        <p className="reading-prose mt-3 text-center   text-gold/60 italic">
           “{summary.affirmation}”
         </p>
       )}
