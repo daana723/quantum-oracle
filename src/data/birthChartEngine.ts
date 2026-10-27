@@ -1,6 +1,7 @@
 // Birth Chart Calculator — fully client-side, no API keys
 // Uses improved astronomical formulas for Sun and Moon longitude
-// Rising sign remains an approximation without precise geographic coordinates
+// Uses location-aware sidereal geometry when birth coordinates are supplied.
+import { ascendantLongitude, birthTimeToUTC, type BirthLocation } from '@/lib/birthLocation';
 
 export interface BirthChartData {
   sunSign: ZodiacPosition;
@@ -10,6 +11,8 @@ export interface BirthChartData {
   elementBalance: Record<string, number>;
   personalCards: number[]; // Major Arcana IDs that resonate
   description: string;
+  calculationMethod?: 'location' | 'approximate';
+  birthUTC?: string;
 }
 
 export interface ZodiacPosition {
@@ -194,13 +197,21 @@ function parseLocalDate(dateStr: string): { year: number; month: number; day: nu
 
 export function calculateBirthChart(
   birthDateStr: string,
-  birthHour: number = 12
+  birthHour: number = 12,
+  birthMinute: number = 0,
+  location?: BirthLocation
 ): BirthChartData {
-  const { year, month, day } = parseLocalDate(birthDateStr);
+  const utc = location ? birthTimeToUTC(birthDateStr, birthHour, birthMinute, location.timeZone) : null;
+  const { year, month, day } = utc
+    ? { year: utc.getUTCFullYear(), month: utc.getUTCMonth() + 1, day: utc.getUTCDate() }
+    : parseLocalDate(birthDateStr);
+  const hour = utc ? utc.getUTCHours() + utc.getUTCMinutes() / 60 : birthHour + birthMinute / 60;
 
-  const sunLong = getSunLongitude(year, month, day, birthHour);
-  const moonLong = getMoonLongitude(year, month, day, birthHour);
-  const risingLong = getRisingLongitude(sunLong, birthHour);
+  const sunLong = getSunLongitude(year, month, day, hour);
+  const moonLong = getMoonLongitude(year, month, day, hour);
+  const risingLong = utc && location
+    ? ascendantLongitude(utc, location.latitude, location.longitude)
+    : getRisingLongitude(sunLong, hour);
 
   const sunSign = getSignFromLongitude(sunLong);
   const moonSign = getSignFromLongitude(moonLong);
@@ -232,6 +243,8 @@ export function calculateBirthChart(
     elementBalance,
     personalCards: uniqueCards,
     description,
+    calculationMethod: location ? 'location' : 'approximate',
+    birthUTC: utc?.toISOString(),
   };
 }
 
@@ -262,13 +275,17 @@ const STORAGE_KEY = "vqv-birth-data";
 export interface StoredBirthData {
   birthDate: string; // YYYY-MM-DD
   birthHour: number;
+  birthMinute?: number;
+  location?: BirthLocation;
   chart: BirthChartData;
 }
 
-export function saveBirthData(birthDateStr: string, birthHour: number, chart: BirthChartData): void {
+export function saveBirthData(birthDateStr: string, birthHour: number, chart: BirthChartData, birthMinute = 0, location?: BirthLocation): void {
   const data: StoredBirthData = {
     birthDate: birthDateStr,
     birthHour,
+    birthMinute,
+    location,
     chart,
   };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
