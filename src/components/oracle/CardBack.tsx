@@ -126,7 +126,7 @@ const CardBack: React.FC<CardBackProps> = ({ onClick, isAnimating, size = "full"
                 <ellipse cx="40" cy="250" rx="4" ry="10" fill="hsl(45, 80%, 55%)" fillOpacity="0.3" />
               </g>
               <g className="animate-float" style={{ animationDelay: "2s" }}>
-                <ellipse cx="160" cy="250" rx="8" ry="15" fill="hsl(350, 50%, 30%)" fillOpacity="0.4" />
+                <ellipse cx="160" cy="250" rx="8" ry="15" fill="hsl(335, 70%, 32%)" fillOpacity="0.4" />
                 <ellipse cx="160" cy="250" rx="4" ry="10" fill="hsl(45, 80%, 55%)" fillOpacity="0.3" />
               </g>
             </svg>

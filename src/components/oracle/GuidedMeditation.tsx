@@ -7,10 +7,10 @@ interface GuidedMeditationProps {
 }
 
 const PHASES = [
-  { label: "Breathe In", duration: 4000, instruction: "Draw breath slowly through your nose…" },
-  { label: "Hold", duration: 4000, instruction: "Let the stillness settle within…" },
-  { label: "Breathe Out", duration: 6000, instruction: "Release gently through your lips…" },
-  { label: "Rest", duration: 2000, instruction: "A moment of emptiness before the next wave…" },
+  { label: "Breathe In", duration: 3000, instruction: "Draw breath slowly through your nose…" },
+  { label: "Hold", duration: 2000, instruction: "Let the stillness settle within…" },
+  { label: "Breathe Out", duration: 4500, instruction: "Release gently through your lips…" },
+  { label: "Rest", duration: 1000, instruction: "A moment of emptiness before the next wave…" },
 ];
 
 const TOTAL_CYCLES = 3;

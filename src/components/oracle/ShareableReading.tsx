@@ -26,9 +26,9 @@ const ShareableReading: React.FC<ShareableReadingProps> = ({ primaryCard, echoCa
 
     // Background gradient - burgundy
     const bg = ctx.createLinearGradient(0, 0, 0, h);
-    bg.addColorStop(0, "#1a0d10");
-    bg.addColorStop(0.5, "#2a1218");
-    bg.addColorStop(1, "#1a0d10");
+    bg.addColorStop(0, "#3d1530");
+    bg.addColorStop(0.5, "#2b0e20");
+    bg.addColorStop(1, "#361221");
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, w, h);
 

@@ -189,7 +189,7 @@ const PatternAnalytics: React.FC = () => {
                               outerRadius={90}
                               innerRadius={45}
                               strokeWidth={2}
-                              stroke="hsl(350, 35%, 8%)"
+                              stroke="hsl(335, 55%, 11%)"
                             >
                               {elements.map((entry, i) => (
                                 <Cell key={i} fill={entry.fill} />
