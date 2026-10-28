@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
-import { X } from "lucide-react";
+import { X, Volume2, VolumeX } from "lucide-react";
 
 interface GuidedMeditationProps {
   onComplete: () => void;
@@ -20,6 +20,19 @@ const GuidedMeditation: React.FC<GuidedMeditationProps> = ({ onComplete, onSkip 
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [started, setStarted] = useState(false);
+  const [muted, setMuted] = useState(() => localStorage.getItem("qv-sound-muted") === "1");
+  const mutedRef = useRef(muted);
+  useEffect(() => {
+    mutedRef.current = muted;
+    localStorage.setItem("qv-sound-muted", muted ? "1" : "0");
+  }, [muted]);
+
+  // Escape skips at any point
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onSkip(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onSkip]);
   const audioContextRef = useRef<AudioContext | null>(null);
   const intervalRef = useRef<number | null>(null);
   const timeoutRef = useRef<number | null>(null);
@@ -28,6 +41,7 @@ const GuidedMeditation: React.FC<GuidedMeditationProps> = ({ onComplete, onSkip 
 
   // Ambient tone using Web Audio API
   const playTone = useCallback((frequency: number, duration: number) => {
+    if (mutedRef.current) return;
     try {
       if (!audioContextRef.current) {
         audioContextRef.current = new AudioContext();
@@ -150,8 +164,18 @@ const GuidedMeditation: React.FC<GuidedMeditationProps> = ({ onComplete, onSkip 
   return (
     <div className="flex flex-col items-center gap-6 animate-fade-in-up text-center relative">
       <button
+        onClick={() => setMuted((m) => !m)}
+        aria-label={muted ? "Turn sound on" : "Turn sound off"}
+        title={muted ? "Sound off" : "Sound on"}
+        className="absolute top-0 left-0 text-muted-foreground hover:text-gold transition-colors"
+      >
+        {muted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+      </button>
+      <button
         onClick={onSkip}
-        className="absolute top-0 right-0 text-muted-foreground hover:text-foreground/80 transition-colors"
+        aria-label="Skip meditation"
+        title="Skip (Esc)"
+        className="absolute top-0 right-0 text-muted-foreground hover:text-gold transition-colors"
       >
         <X className="w-5 h-5" />
       </button>
@@ -191,6 +215,13 @@ const GuidedMeditation: React.FC<GuidedMeditationProps> = ({ onComplete, onSkip 
       <p className="font-body text-sm text-foreground/60 italic max-w-xs">
         {phase.instruction}
       </p>
+
+      <button
+        onClick={onSkip}
+        className="px-6 py-2 rounded-full font-display text-sm tracking-wider text-gold/70 border border-gold/25 hover:text-gold hover:border-gold/60 hover:bg-gold/10 transition-colors"
+      >
+        I'm ready — begin reading →
+      </button>
     </div>
   );
 };
