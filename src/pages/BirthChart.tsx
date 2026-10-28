@@ -37,6 +37,19 @@ const BirthChart: React.FC = () => {
     }
   };
 
+  // Ada Lovelace: born 10 December 1815 at about 1:00 pm local time, Piccadilly, London
+  // (time from Lady Byron's records as catalogued by Astro-Databank).
+  const loadAdaSample = () => {
+    setError('');
+    const ada: BirthLocation = { name: 'Piccadilly, London (Ada Lovelace)', latitude: 51.5074, longitude: -0.1416, timeZone: 'Europe/London' };
+    try {
+      setBirthDate('1815-12-10'); setBirthHour(13); setBirthMinute(0); setLocation(ada);
+      setChart(calculateBirthChart('1815-12-10', 13, 0, ada)); // sample only — not saved over the visitor's own data
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Could not load the sample chart.');
+    }
+  };
+
   const handleClear = () => {
     clearBirthData();
     setChart(null);
@@ -101,6 +114,10 @@ const BirthChart: React.FC = () => {
                 <p className="font-body text-lg text-muted-foreground italic">
                   Your birth date, local time and birthplace
                 </p>
+                <Button type="button" variant="outline" onClick={loadAdaSample} className="mt-4 font-display">
+                  See a sample: Ada Lovelace, 1815
+                </Button>
+                <p className="font-body text-sm text-muted-foreground mt-2">Born 10 Dec 1815, about 1:00 pm, London — the first computer programmer.</p>
               </div>
 
               <div className="space-y-5">
