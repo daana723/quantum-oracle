@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import KofiButton from "@/components/oracle/KofiButton";
+import { DEMO_UNLOCK_CODE } from "@/components/oracle/KofiButton";
 
 interface UnlockDialogProps {
   onUnlock: (code: string) => boolean;
@@ -77,12 +77,19 @@ const UnlockDialog: React.FC<UnlockDialogProps> = ({ onUnlock, highlight }) => {
                 Redeem code
               </Button>
             </div>
-            <div className="pt-2 flex justify-center">
-              <KofiButton />
+            <div className="rounded-md border border-gold/25 bg-gold/5 p-3 text-center space-y-2">
+              <p className="text-sm">
+                Demo mode — this is a free preview. Use code{" "}
+                <span className="font-display text-gold">{DEMO_UNLOCK_CODE}</span>.
+              </p>
+              <button
+                type="button"
+                onClick={() => { setCode(DEMO_UNLOCK_CODE); setError(null); }}
+                className="font-display text-xs tracking-wider text-gold underline underline-offset-4"
+              >
+                Fill in the demo code
+              </button>
             </div>
-            <p className="text-xs text-muted-foreground italic text-center">
-              Support the project and I'll send you an unlock code.
-            </p>
           </div>
         )}
       </DialogContent>

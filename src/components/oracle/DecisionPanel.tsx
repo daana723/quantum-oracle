@@ -12,6 +12,7 @@ const DecisionPanel: React.FC = () => {
 
   const handleDraw = useCallback(async () => {
     setDrawing(true);
+    navigator.vibrate?.(15);
     try {
       const r = await drawDecision(question);
       setResult(r);

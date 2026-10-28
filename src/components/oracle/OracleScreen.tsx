@@ -11,6 +11,7 @@ import SpreadReadingDisplay from "@/components/oracle/SpreadReadingDisplay";
 import HistoryDrawer from "@/components/oracle/HistoryDrawer";
 import InstallBanner from "@/components/oracle/InstallBanner";
 import GuidedMeditation from "@/components/oracle/GuidedMeditation";
+import HowItsBuilt from "@/components/oracle/HowItsBuilt";
 import NotificationSettings from "@/components/oracle/NotificationSettings";
 import {
   Dialog,
@@ -97,6 +98,7 @@ const OracleScreen: React.FC = () => {
     if (state !== "hidden") return;
 
     setState("collapsing");
+    navigator.vibrate?.(15);
 
     setTimeout(async () => {
       const intent = selectedTheme || (customIntent ? null : null);
@@ -368,6 +370,8 @@ const OracleScreen: React.FC = () => {
               ))}
             </div>
 
+            <HowItsBuilt />
+
             {mode === "decision" ? (
               <DecisionPanel />
             ) : mode === "unstick" ? (
@@ -381,6 +385,23 @@ const OracleScreen: React.FC = () => {
                   <p className="font-body text-sm md:text-base text-muted-foreground italic">
                     What draws your attention inward?
                   </p>
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-2 max-w-md" aria-label="Sample intentions">
+                  {([
+                    { label: "Career pivot", theme: "career", text: "Should I pivot my career, and what is holding me back?" },
+                    { label: "Creative block", theme: "self", text: "What would help me move through this creative block?" },
+                    { label: "Too many choices", theme: "clarity", text: "I'm overwhelmed by options — what matters most right now?" },
+                  ] as const).map((p) => (
+                    <button
+                      key={p.label}
+                      type="button"
+                      onClick={() => { setSelectedTheme(p.theme); setCustomIntent(p.text); }}
+                      className="px-3 py-1 rounded-full border border-gold/25 font-body text-sm text-gold/70 hover:text-gold hover:border-gold/60 transition-colors"
+                    >
+                      Try: {p.label}
+                    </button>
+                  ))}
                 </div>
 
                 <IntentSelector
