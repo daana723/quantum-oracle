@@ -59,9 +59,9 @@ export function initTelegramMiniApp(): void {
   try {
     tg.ready();
     tg.expand();
-    // Match the burgundy theme (#1a0d10)
-    tg.setHeaderColor("#1a0d10");
-    tg.setBackgroundColor("#1a0d10");
+    // Match the vibrant magenta-burgundy theme (#361221)
+    tg.setHeaderColor("#361221");
+    tg.setBackgroundColor("#361221");
   } catch (err) {
     console.warn("[Telegram] init failed", err);
   }

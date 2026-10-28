@@ -186,16 +186,16 @@
   /* Rose/burgundy ambient glow */
   .glow-rose {
     box-shadow: 
-      0 0 20px hsl(350 50% 40% / 0.3),
-      0 0 40px hsl(350 50% 40% / 0.15),
-      0 0 60px hsl(350 50% 40% / 0.05);
+      0 0 20px hsl(335 70% 45% / 0.3),
+      0 0 40px hsl(335 70% 45% / 0.15),
+      0 0 60px hsl(335 70% 45% / 0.05);
   }
 
   /* Combined gold and rose glow */
   .glow-gold-rose {
     box-shadow: 
       0 0 20px hsl(45 80% 55% / 0.25),
-      0 0 40px hsl(350 50% 40% / 0.15),
+      0 0 40px hsl(335 70% 45% / 0.15),
       0 0 60px hsl(45 80% 55% / 0.1);
   }
 
