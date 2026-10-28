@@ -16,15 +16,15 @@
 
 @layer base {
   :root {
-    /* Core warm burgundy palette */
-    --background: 350 30% 15%;
+    /* Vibrant magenta-leaning burgundy palette */
+    --background: 335 50% 14%;
     --foreground: 45 30% 90%;
 
     /* Card surfaces */
-    --card: 350 28% 19%;
+    --card: 335 48% 18%;
     --card-foreground: 45 30% 90%;
 
-    --popover: 350 28% 20%;
+    --popover: 335 48% 19%;
     --popover-foreground: 45 30% 90%;
 
     /* Royal gold primary */
@@ -32,11 +32,11 @@
     --primary-foreground: 240 20% 4%;
 
     /* Deep burgundy secondary */
-    --secondary: 350 50% 25%;
+    --secondary: 335 62% 24%;
     --secondary-foreground: 45 30% 90%;
 
     /* Muted cosmic tones */
-    --muted: 350 25% 18%;
+    --muted: 335 42% 17%;
     --muted-foreground: 35 20% 76%;
 
     /* Jewel tone accents */
@@ -49,7 +49,7 @@
 
     /* Borders and inputs */
     --border: 45 30% 25%;
-    --input: 350 25% 22%;
+    --input: 335 42% 21%;
     --ring: 45 80% 55%;
 
     --radius: 0.5rem;
@@ -57,51 +57,51 @@
     /* Extended jewel tones */
     --emerald: 160 45% 30%;
     --sapphire: 220 60% 35%;
-    --burgundy: 350 50% 30%;
+    --burgundy: 335 70% 32%;
     --amethyst: 280 40% 35%;
     --gold: 45 80% 55%;
     --gold-dim: 45 60% 40%;
     --gold-glow: 45 90% 70%;
     
     /* Warm cosmic background colors */
-    --cosmic-deep: 350 30% 13%;
-    --cosmic-nebula: 350 32% 19%;
-    --cosmic-void: 350 28% 14%;
+    --cosmic-deep: 335 55% 11%;
+    --cosmic-nebula: 335 55% 17%;
+    --cosmic-void: 335 50% 12%;
     
     /* Rose accent for glows */
-    --rose-glow: 350 60% 45%;
+    --rose-glow: 335 80% 50%;
 
     /* Sidebar (dark theme by default) */
-    --sidebar-background: 350 35% 10%;
+    --sidebar-background: 335 50% 10%;
     --sidebar-foreground: 45 30% 85%;
     --sidebar-primary: 45 80% 55%;
-    --sidebar-primary-foreground: 350 35% 8%;
+    --sidebar-primary-foreground: 335 50% 10%;
     --sidebar-accent: 160 45% 20%;
     --sidebar-accent-foreground: 45 30% 90%;
-    --sidebar-border: 350 30% 20%;
+    --sidebar-border: 335 45% 20%;
     --sidebar-ring: 45 80% 55%;
   }
 
   /* No light mode - always dark cosmic theme */
   .dark {
-    --background: 350 30% 15%;
+    --background: 335 50% 14%;
     --foreground: 45 30% 90%;
-    --card: 350 28% 19%;
+    --card: 335 48% 18%;
     --card-foreground: 45 30% 90%;
-    --popover: 350 28% 20%;
+    --popover: 335 48% 19%;
     --popover-foreground: 45 30% 90%;
     --primary: 45 80% 55%;
-    --primary-foreground: 350 35% 8%;
-    --secondary: 350 50% 25%;
+    --primary-foreground: 335 50% 10%;
+    --secondary: 335 62% 24%;
     --secondary-foreground: 45 30% 90%;
-    --muted: 350 25% 18%;
+    --muted: 335 42% 17%;
     --muted-foreground: 35 20% 76%;
     --accent: 35 50% 25%;
     --accent-foreground: 45 30% 90%;
     --destructive: 0 62% 30%;
     --destructive-foreground: 45 30% 90%;
     --border: 45 30% 25%;
-    --input: 350 25% 22%;
+    --input: 335 42% 21%;
     --ring: 45 80% 55%;
   }
 }
@@ -159,7 +159,7 @@
   .bg-cosmic {
     background: 
       radial-gradient(ellipse at 20% 80%, hsl(var(--cosmic-nebula) / 0.5) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 20%, hsl(var(--accent) / 0.25) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, hsl(var(--accent) / 0.12) 0%, transparent 50%),
       radial-gradient(ellipse at 50% 50%, hsl(var(--cosmic-nebula)) 0%, hsl(var(--cosmic-void)) 100%);
   }
 
