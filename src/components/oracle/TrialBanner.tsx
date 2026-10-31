@@ -1,6 +1,7 @@
 import React from "react";
 import { Hourglass, Sparkles } from "lucide-react";
 import UnlockDialog from "@/components/oracle/UnlockDialog";
+import { PUBLIC_DEMO } from "@/lib/trial";
 
 interface TrialBannerProps {
   unlocked: boolean;
@@ -15,6 +16,7 @@ const TrialBanner: React.FC<TrialBannerProps> = ({
   readingsLeft,
   onUnlock,
 }) => {
+  if (PUBLIC_DEMO) return null;
   if (unlocked) {
     return (
       <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold/30 bg-card/40 font-body text-xs text-gold/80">

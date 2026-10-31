@@ -1,5 +1,6 @@
 import React from "react";
 import { KeyRound } from "lucide-react";
+import { PUBLIC_DEMO } from "@/lib/trial";
 
 interface KofiButtonProps {
   className?: string;
@@ -8,7 +9,7 @@ interface KofiButtonProps {
 /** Demo mode: no payment link yet — shows the open demo unlock code instead. */
 export const DEMO_UNLOCK_CODE = "VEIL-LIFETIME";
 
-const KofiButton: React.FC<KofiButtonProps> = ({ className = "" }) => (
+const KofiButton: React.FC<KofiButtonProps> = ({ className = "" }) => PUBLIC_DEMO ? null : (
   <div
     className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-card/50 border border-gold/30 font-display text-sm tracking-wider text-gold/80 ${className}`}
   >
