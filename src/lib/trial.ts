@@ -4,6 +4,9 @@
 
 const STORAGE_KEY = "qv-trial-v1";
 
+/** Public feedback demo: no countdown, reading budget, or code required. */
+export const PUBLIC_DEMO = true;
+
 export const TRIAL_DAYS = 7;
 export const TRIAL_READINGS = 5;
 
@@ -60,11 +63,13 @@ export function readingsRemaining(state: TrialState): number {
 
 /** Premium access = unlocked, or still inside both the day and reading budget. */
 export function hasAccess(state: TrialState): boolean {
+  if (PUBLIC_DEMO) return true;
   if (state.unlocked) return true;
   return daysRemaining(state) > 0 && readingsRemaining(state) > 0;
 }
 
 export function recordReading(state: TrialState): TrialState {
+  if (PUBLIC_DEMO) return state;
   if (state.unlocked) return state;
   return saveTrial({ ...state, readingsUsed: state.readingsUsed + 1 });
 }
