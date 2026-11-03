@@ -1,15 +1,25 @@
-// Minor Arcana card images — keyed by card id
-// Images will be added as they are generated
+// Minor Arcana card images, keyed by card id (e.g. "swords-8").
+// Two editions: the Original deck (files in this folder) and the Twilight
+// edition (files in ./twilight). Twilight falls back to Original per card.
 
-const images: Record<string, string> = {};
+export type MinorEdition = "original" | "twilight";
 
-// Dynamically import all jpg files in this directory
-const modules = import.meta.glob('./**/*.jpg', { eager: true, import: 'default' }) as Record<string, string>;
+const original: Record<string, string> = {};
+const twilightOnly: Record<string, string> = {};
 
-for (const [path, url] of Object.entries(modules)) {
-  // path looks like ./pentacles-ace.jpg → pentacles-ace
-  const id = path.replace('./', '').replace('.jpg', '');
-  images[id] = url;
+const originals = import.meta.glob('./*.jpg', { eager: true, import: 'default' }) as Record<string, string>;
+for (const [path, url] of Object.entries(originals)) {
+  original[path.replace('./', '').replace('.jpg', '')] = url;
 }
 
-export const minorCardImages: Record<string, string> = images;
+const twilights = import.meta.glob('./twilight/*.jpg', { eager: true, import: 'default' }) as Record<string, string>;
+for (const [path, url] of Object.entries(twilights)) {
+  twilightOnly[path.replace('./twilight/', '').replace('.jpg', '')] = url;
+}
+
+export const minorCardImages: Record<string, string> = original;
+export const twilightCardIds = new Set(Object.keys(twilightOnly));
+
+export function getMinorCardImages(edition: MinorEdition): Record<string, string> {
+  return edition === "twilight" ? { ...original, ...twilightOnly } : original;
+}

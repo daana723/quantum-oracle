@@ -1,11 +1,19 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download } from "lucide-react";
 import { minorArcana, suitLabels, type MinorSuit } from "@/data/minorArcanaCards";
-import { minorCardImages } from "@/assets/minor";
+import { getMinorCardImages, twilightCardIds, type MinorEdition } from "@/assets/minor";
 
 const MinorArcanaGallery: React.FC = () => {
   const navigate = useNavigate();
+  const [edition, setEdition] = useState<MinorEdition>(
+    () => (localStorage.getItem("qv-minor-edition") as MinorEdition) || "original",
+  );
+  const minorCardImages = getMinorCardImages(edition);
+  const chooseEdition = (e: MinorEdition) => {
+    setEdition(e);
+    localStorage.setItem("qv-minor-edition", e);
+  };
 
   const handleDownload = useCallback(async (e: React.MouseEvent, cardId: string, cardName: string) => {
     e.preventDefault();
@@ -24,7 +32,7 @@ const MinorArcanaGallery: React.FC = () => {
     } catch {
       window.open(src, "_blank");
     }
-  }, []);
+  }, [minorCardImages]);
 
   const suits: MinorSuit[] = ['pentacles', 'cups', 'wands', 'swords'];
 
@@ -38,6 +46,21 @@ const MinorArcanaGallery: React.FC = () => {
         >
           ← Back
         </button>
+      </div>
+
+      <div role="group" aria-label="Deck edition" className="flex gap-2 mb-8">
+        {(["original", "twilight"] as MinorEdition[]).map((e) => (
+          <button
+            key={e}
+            onClick={() => chooseEdition(e)}
+            aria-pressed={edition === e}
+            className={`text-sm px-4 py-2 rounded-full border transition-colors ${
+              edition === e ? "border-gold bg-gold/15 text-gold" : "border-gold/30 text-gold/60 hover:text-gold"
+            }`}
+          >
+            {e === "original" ? "Original deck" : `Twilight edition (${twilightCardIds.size} new)`}
+          </button>
+        ))}
       </div>
 
       {suits.map((suit) => {
@@ -75,6 +98,9 @@ const MinorArcanaGallery: React.FC = () => {
                         </button>
                       )}
                     </div>
+                    {edition === "twilight" && twilightCardIds.has(card.id) && (
+                      <span className="text-[10px] uppercase tracking-wider text-gold">Twilight</span>
+                    )}
                     <span className="text-xs text-gold/70 group-hover:text-gold font-body text-center transition-colors">
                       {card.name}
                     </span>
